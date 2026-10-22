@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ฝึกพิมพ์ดีดปวช3</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mut:#77756e;--ac:#d9622b;--ok:#2e8b57;--bad:#d03b3b;--ln:#e4e1d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--card:#222220;--tx:#f0eee8;--mut:#9a978e;--ac:#f08a52;--ok:#4fb87d;--bad:#ff7a7a;--ln:#34332f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171716;--card:#222220;--tx:#f0eee8;--mut:#9a978e;--ac:#f08a52;--ok:#4fb87d;--bad:#ff7a7a;--ln:#34332f;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:'Sarabun','Noto Sans Thai',system-ui,sans-serif;padding:16px;max-width:640px;margin:0 auto}
+h1{font-size:22px;margin:4px 0 14px}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:4px}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font:600 15px inherit;font-family:inherit;padding:10px 4px;border-radius:10px;cursor:pointer}
+.tabs button.on{background:var(--ac);color:#fff}
+.opts{display:flex;gap:8px;margin:14px 0 0;flex-wrap:wrap;align-items:center;min-height:36px}
+.chip{border:1px solid var(--ln);background:var(--card);color:var(--tx);font:600 14px inherit;font-family:inherit;padding:7px 14px;border-radius:99px;cursor:pointer}
+.chip.on{border-color:var(--ac);color:var(--ac)}
+.hint{color:var(--mut);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.stats div{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 4px;text-align:center}
+.stats b{display:block;font-size:22px}
+.stats span{font-size:12px;color:var(--mut)}
+.box{position:relative;background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:18px;min-height:190px;font-size:24px;line-height:2;white-space:pre-wrap;word-break:break-word;cursor:text}
+.box .ok{color:var(--ok)}
+.box .bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent);border-radius:4px}
+.box .p{color:var(--mut)}
+.box .cur{border-bottom:3px solid var(--ac)}
+textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:none;font-size:16px;border:0;cursor:text}
+.res{background:var(--card);border:2px solid var(--ac);border-radius:16px;padding:16px;margin-top:14px;text-align:center}
+.res h2{margin:0 0 6px;font-size:20px}
+.res p{margin:4px 0;color:var(--mut)}
+.go{display:block;width:100%;margin-top:14px;border:0;background:var(--ac);color:#fff;font:700 16px inherit;font-family:inherit;padding:13px;border-radius:12px;cursor:pointer}
+.hint.c{text-align:center;margin-top:12px}
+.vid{position:relative;aspect-ratio:16/9;margin-top:14px;border-radius:14px;overflow:hidden;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#vwrap a{display:block;text-align:center;margin-top:6px;font-size:13px;color:var(--mut)}
+.tt{font-weight:700;margin:14px 0 8px}
+.inp{display:block;width:100%;margin-top:12px;font-size:16px;font-family:inherit;border:1px solid var(--ln);border-radius:12px;padding:12px;background:var(--card);color:var(--tx)}
+textarea.inp{height:200px;resize:vertical}
+.line{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;font-size:28px;line-height:1.9;white-space:pre-wrap;min-height:76px}
+.line .w{display:inline-block;white-space:nowrap}
+#gline .w{display:inline;white-space:normal}
+#gline{font-size:26px;overflow-wrap:anywhere;word-break:break-word}
+.line .cw{border-bottom:3px solid var(--ac)}
+.line .ok{color:var(--ok)}
+.line .bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent);border-radius:4px}
+.line .cur{color:var(--ac);font-weight:700}
+.line .sp.cur{border-bottom:3px solid var(--ac)}
+#lin,#gin{width:100%;height:96px;margin-top:10px;font-size:22px;font-family:inherit;border:2px solid #6cb4f0;border-radius:12px;padding:10px;background:var(--card);color:var(--tx);resize:none}
+.kbd{margin-top:12px;user-select:none;-webkit-user-select:none}
+.kr{display:flex;gap:3px;margin-bottom:3px}
+.k{flex:1;min-width:0;height:34px;position:relative;background:var(--card);border:1px solid var(--ln);border-radius:6px;font-size:13px;font-style:normal;color:var(--tx)}
+.k s{position:absolute;left:3px;top:1px;font-size:9px;color:var(--mut);text-decoration:none}
+.k b{position:absolute;right:3px;bottom:1px;font-weight:400}
+.k.m{display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:10px}
+.k.n{background:var(--ok);color:#fff;border-color:var(--ok)}
+.k.n s{color:#fff}
+.k.w{background:var(--bad);color:#fff;border-color:var(--bad)}
+</style>
+</head>
+<body>
+<h1>⌨️ ฝึกพิมพ์ดีดปวช3</h1>
+<div class="opts" id="langs" style="margin:0 0 12px"><button class="chip on" data-l="th">ไทย</button><button class="chip" data-l="en">English</button></div>
+<div class="tabs" id="tabs">
+  <button data-m="time" class="on">จับเวลา</button>
+  <button data-m="type">พิมพ์</button>
+  <button data-m="letter">ฝึกแป้น</button>
+  <button data-m="song">ตามเพลง</button>
+</div>
+<div class="opts" id="opts"></div>
+<div id="vwrap" hidden></div>
+<div id="sp" hidden>
+  
+  <input id="slink" class="inp" placeholder="วางลิงก์ YouTube (ถ้ามี)" inputmode="url" autocapitalize="off" autocorrect="off">
+  <label class="chip" style="display:inline-block;margin-top:12px;cursor:pointer">🎵 เลือกไฟล์เสียง (mp3 / mp4)<input type="file" id="sfile" accept="audio/*,video/mp4,.mp3,.mp4" hidden></label>
+  <textarea id="slyr" class="inp" placeholder="วางหรือพิมพ์เนื้อเพลงที่นี่ (1 บรรทัด = 1 ท่อน)"></textarea>
+  <div class="hint" id="smsg"></div>
+  <button class="go" id="sgo">เริ่มพิมพ์ตามเนื้อเพลง</button>
+</div>
+
+<div id="std">
+  <div class="stats">
+    <div><b id="v1">0</b><span id="l1"></span></div>
+    <div><b id="v2">0</b><span id="l2"></span></div>
+    <div><b id="v3">0</b><span id="l3"></span></div>
+  </div>
+  <div class="box" id="box"></div>
+  <div class="hint c" id="hint1">แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)</div>
+</div>
+
+<div id="lp" hidden>
+  <div class="tt" id="ltitle"></div>
+  <div class="stats">
+    <div><b id="s1">0</b><span>สัญลักษณ์</span></div>
+    <div><b id="s2">0%</b><span>ความก้าวหน้า</span></div>
+    <div><b id="s3">0</b><span>ค่า/นาที</span></div>
+    <div><b id="s4">0</b><span>ข้อผิดพลาด</span></div>
+    <div><b id="s5">100%</b><span>ความถูกต้อง</span></div>
+    <div><b id="s6">00:00</b><span>เวลา</span></div>
+  </div>
+  <div class="line" id="line"></div>
+  <textarea id="lin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์ที่นี่..."></textarea>
+  <div class="kbd" id="kbd"></div>
+</div>
+
+<div id="sg" hidden>
+  <div class="stats">
+    <div><b id="g1">0/0</b><span>บรรทัด</span></div>
+    <div><b id="g2">0</b><span>WPM</span></div>
+    <div><b id="g3">100%</b><span>ความแม่นยำ</span></div>
+  </div>
+  <div class="line" id="gline"></div>
+  <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์บรรทัดนี้..."></textarea>
+</div>
+
+<div class="res" id="res" hidden></div>
+<button class="go" id="reset">เริ่มใหม่</button>
+
+<script>
+const $=s=>document.querySelector(s);
+const WORDS="ผม เธอ เรา ไป มา กิน ข้าว น้ำ บ้าน โรงเรียน เพื่อน ครู หนังสือ อ่าน เขียน เล่น เกม ดนตรี ร้องเพลง ทะเล ภูเขา ต้นไม้ ดอกไม้ ท้องฟ้า ดวงดาว แมว หมา ปลา นก รถ เรือ เครื่องบิน ตลาด ร้านค้า อาหาร อร่อย สนุก ทำงาน พักผ่อน วันนี้ พรุ่งนี้ เมื่อวาน เช้า เย็น กลางคืน ฝนตก แดดออก อากาศดี ขอบคุณ สวัสดี ยินดี ตั้งใจ พยายาม ฝึกฝน รวดเร็ว แม่นยำ".split(" ");
+const WORDS_EN="the be to of and a in that have it for not on with he as you do at this but his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us practice keyboard speed accuracy finger typing school friend music learn simple quick smooth steady focus".split(" ");
+const MARK=/\p{M}/u,lab=c=>MARK.test(c)?"◌"+c:c;
+const KB_TH=[
+[["_","%"],["ๅ","+"],["/","๑"],["-","๒"],["ภ","๓"],["ถ","๔"],["ุ","ู"],["ึ","฿"],["ค","๕"],["ต","๖"],["จ","๗"],["ข","๘"],["ช","๙"]],
+[["ๆ","๐"],["ไ",'"'],["ำ","ฎ"],["พ","ฑ"],["ะ","ธ"],["ั","ํ"],["ี","๊"],["ร","ณ"],["น","ฯ"],["ย","ญ"],["บ","ฐ"],["ล",","],["ฃ","ฅ"]],
+[["ฟ","ฤ"],["ห","ฆ"],["ก","ฏ"],["ด","โ"],["เ","ฌ"],["้","็"],["่","๋"],["า","ษ"],["ส","ศ"],["ว","ซ"],["ง","."]],
+[["ผ","("],["ป",")"],["แ","ฉ"],["อ","ฮ"],["ิ","ฺ"],["ื","์"],["ท","?"],["ม","ฒ"],["ใ","ฬ"],["ฝ","ฦ"]]
+];
+const KB_EN=[
+[["`","~"],["1","!"],["2","@"],["3","#"],["4","$"],["5","%"],["6","^"],["7","&"],["8","*"],["9","("],["0",")"],["-","_"],["=","+"]],
+[["q","Q"],["w","W"],["e","E"],["r","R"],["t","T"],["y","Y"],["u","U"],["i","I"],["o","O"],["p","P"],["[","{"],["]","}"]],
+[["a","A"],["s","S"],["d","D"],["f","F"],["g","G"],["h","H"],["j","J"],["k","K"],["l","L"],[";",":"],["'",'"']],
+[["z","Z"],["x","X"],["c","C"],["v","V"],["b","B"],["n","N"],["m","M"],[",","<"],[".",">"],["/","?"]]
+];
+let KB=KB_TH;
+const LES_TH=[
+["h","แถวแป้นเหย้า","ฟหกด่าสว"],
+["h2","แถวกลางทั้งแถว","ฟหกดเ้่าสวง"],
+["t","แถวบน","ๆไำพะัีรนยบล"],
+["b","แถวล่าง","ผปแอิืทมใฝ"],
+["n","แถวตัวเลข","ๅ/-ภถุึคตจขช"],
+["all","ทั้งหมด",KB_TH.map(r=>r.map(k=>k[0]).join("")).join("").replace(/[_]/g,"")]
+];
+const LES_EN=[
+["h","Home row","asdfjkl;"],
+["h2","Whole home row","asdfghjkl;'"],
+["t","Top row","qwertyuiop"],
+["b","Bottom row","zxcvbnm,./"],
+["n","Number row","1234567890"],
+["c","Capital letters","ASDFJKLQWERTYUIOP"],
+["all","All letters","abcdefghijklmnopqrstuvwxyz"]
+];
+let LESSONS=LES_TH,lang="th";
+
+/* ---------- โหมดจับเวลา / พิมพ์ ---------- */
+const box=$("#box"),res=$("#res");
+const inp=document.createElement("textarea");
+inp.className="ov";inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
+inp.addEventListener("paste",e=>e.preventDefault());
+let mode="time",dur=60,les="h";
+let songTyping=false,gtmr=null,vid="";
+let target="",started=0,done=false,errs=0,keys=0,prev=0,tmr=null;
+
+function genText(n){let a=[];const W=lang==="en"?WORDS_EN:WORDS;for(let i=0;i<n;i++)a.push(W[Math.random()*W.length|0]);return a.join(" ")}
+function buildOpts(){
+  const o=$("#opts");
+  if(mode==="time")o.innerHTML=[30,60,120].map(s=>`<button class="chip ${s===dur?"on":""}" data-d="${s}">${s} วินาที</button>`).join("");
+  else if(mode==="letter")o.innerHTML=LESSONS.map(([k,t])=>`<button class="chip ${k===les?"on":""}" data-p="${k}">${t}</button>`).join("");
+  else if(mode==="song")o.innerHTML=songTyping?'<button class="chip" data-e="1">✏️ แก้ไขเนื้อเพลง</button>':'<span class="hint">เลือกไฟล์เสียงแล้วใส่เนื้อเพลง</span>';
+  else o.innerHTML='<span class="hint">พิมพ์ข้อความให้ครบ ไม่จำกัดเวลา</span>';
+}
+function reset(){
+  clearInterval(tmr);tmr=null;clearInterval(ltmr);ltmr=null;clearInterval(gtmr);gtmr=null;
+  res.hidden=true;
+  const S=mode==="song",setup=S&&!songTyping;
+  $("#std").hidden=mode==="letter"||S;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);
+  $("#vwrap").hidden=!S;$("#sp").hidden=!setup;$("#reset").hidden=setup;
+  if(S){loadVid();if(songTyping)greset();return}
+  if(mode==="letter"){lreset();return}
+  inp.value="";inp.disabled=false;prev=0;errs=keys=0;started=0;done=false;
+  if(setup)return;
+  target=genText(mode==="time"?40:18);
+  draw();stats();
+}
+function draw(){
+  const t=inp.value,len=t.length;
+  let h="";
+  for(const m of target.matchAll(/\P{M}\p{M}*/gu)){
+    const s=m.index,e=s+m[0].length;
+    let cls="p";
+    if(len>s){let w=false;for(let i=s;i<Math.min(e,len);i++)if(t[i]!==target[i])w=true;cls=w?"bad":(len>=e?"ok":"p")}
+    if(len>=s&&len<e&&cls!=="bad")cls+=" cur";
+    h+=`<span class="${cls}">${m[0]}</span>`;
+  }
+  box.innerHTML=h;box.appendChild(inp);
+}
+function correctCount(){const t=inp.value;let c=0;for(let i=0;i<t.length;i++)if(t[i]===target[i])c++;return c}
+function elapsed(){return started?(Date.now()-started)/1000:0}
+function stats(){
+  const set=(i,l,v)=>{$("#l"+i).textContent=l;$("#v"+i).textContent=v};
+  const el=elapsed();
+  set(1,mode==="time"?"เหลือ (วิ)":"เวลา (วิ)",mode==="time"?Math.max(0,Math.ceil(dur-el)):Math.floor(el));
+  set(2,"WPM",el>0?Math.round(correctCount()/5/(el/60)):0);
+  set(3,"แม่นยำ %",keys?Math.round((1-errs/keys)*100):100);
+}
+function showRes(el,c,acc){
+  const wpm=Math.round(c/5/(el/60));
+  res.hidden=false;
+  res.innerHTML=`<h2>เสร็จแล้ว! 🎉</h2><p><b style="color:var(--tx);font-size:32px">${wpm}</b> WPM</p><p>แม่นยำ ${acc}% · พิมพ์ถูก ${c} ตัวอักษร · ใช้เวลา ${Math.round(el)} วินาที</p>`;
+}
+function finish(){
+  done=true;clearInterval(tmr);inp.disabled=true;
+  showRes(mode==="time"?dur:elapsed(),correctCount(),keys?Math.round((1-errs/keys)*100):100);
+  stats();
+}
+inp.addEventListener("input",()=>{
+  if(done)return;
+  let v=inp.value;
+  if(v.length>target.length){v=v.slice(0,target.length);inp.value=v}
+  if(!started){started=Date.now();tmr=setInterval(()=>{stats();if(mode==="time"&&elapsed()>=dur)finish()},200)}
+  for(let i=prev;i<v.length;i++){keys++;if(v[i]!==target[i])errs++}
+  prev=v.length;
+  if(mode==="time"&&target.length-v.length<50)target+=" "+genText(15);
+  draw();stats();inp.focus();
+  if(mode!=="time"&&v.length>=target.length)finish();
+});
+box.addEventListener("click",()=>inp.focus());
+
+/* ---------- โหมดฝึกแป้นพิมพ์ (แบบ typingstudy) ---------- */
+const lin=$("#lin");
+lin.addEventListener("paste",e=>e.preventDefault());
+let lwords=[],ltarget="",lstart=0,ldone=false,lerr=0,lkeys=0,lprev=0,ltmr=null;
+const kmap={};
+
+function buildKb(){
+  const side=(t,f)=>`<i class="k m ${t==="Shift"?"ksh":""}" style="flex:${f}">${t}</i>`;
+  const key=k=>{const L=/^[a-z]$/.test(k[0]);return `<i class="k" data-k="${k[0]}">${L?"":`<s>${lab(k[1])}</s>`}<b>${L?k[0].toUpperCase():lab(k[0])}</b></i>`};
+  const row=(pre,r,post)=>`<div class="kr">${pre}${r.map(key).join("")}${post}</div>`;
+  $("#kbd").innerHTML=
+    row("",KB[0],side("Back",1.8))+row(side("Tab",1.5),KB[1],"")+
+    row(side("Caps",1.8),KB[2],side("Enter",2.2))+row(side("Shift",2.4),KB[3],side("Shift",2.4))+
+    `<div class="kr"><i style="flex:3"></i><i class="k m" id="ksp" style="flex:8">${lang==="en"?"Space":"เว้นวรรค"}</i><i style="flex:3"></i></div>`;
+  document.querySelectorAll("#kbd .k[data-k]").forEach(el=>{
+    const r=KB.flat().find(k=>k[0]===el.dataset.k);
+    kmap[r[0]]={el,sh:false};kmap[r[1]]={el,sh:true};
+  });
+}
+function genWords(){
+  const p=[...LESSONS.find(l=>l[0]===les)[2]];
+  const R=()=>p[Math.random()*p.length|0];
+  const w=[],pairs=p.length<=12;
+  if(pairs)p.forEach(c=>w.push(c+c));
+  for(let i=0;i<(pairs?12:24);i++){let s="";for(let k=0,L=2+(Math.random()*3|0);k<L;k++)s+=R();w.push(s)}
+  return w;
+}
+function lreset(){
+  clearInterval(ltmr);ltmr=null;
+  lwords=genWords();ltarget=lwords.join(" ");
+  lin.value="";lin.disabled=false;lstart=0;ldone=false;lerr=lkeys=lprev=0;
+  $("#ltitle").textContent=(lang==="en"?"Keyboard lesson: ":"แป้นพิมพ์ใหม่: ")+LESSONS.find(l=>l[0]===les)[1];
+  ldraw();lstats();lhl();
+}
+function ldraw(){
+  const t=lin.value,len=t.length;
+  const st=j=>j<len?(t[j]===ltarget[j]?"ok":"bad"):(j===len?"cur":"");
+  let h="",pos=0;
+  lwords.forEach((w,wi)=>{
+    const e=pos+w.length;
+    let ch="";
+    for(let k=0;k<w.length;k++)ch+=`<span class="${st(pos+k)}">${lab(w[k])}</span>`;
+    h+=`<span class="w${len>=pos&&len<=e?" cw":""}">${ch}</span>`;
+    if(wi<lwords.length-1)h+=`<span class="sp ${st(e)}"> </span>`;
+    pos=e+1;
+  });
+  $("#line").innerHTML=h;
+}
+function lstats(){
+  const t=lin.value,len=t.length,el=lstart?(Date.now()-lstart)/1000:0;
+  let c=0;for(let i=0;i<len;i++)if(t[i]===ltarget[i])c++;
+  $("#s1").textContent=len;
+  $("#s2").textContent=Math.round(len/ltarget.length*100)+"%";
+  $("#s3").textContent=el>0?Math.round(c/5/(el/60)):0;
+  $("#s4").textContent=lerr;
+  $("#s5").textContent=(lkeys?Math.round((1-lerr/lkeys)*100):100)+"%";
+  const s=Math.floor(el);
+  $("#s6").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+function hl1(c,cls){
+  if(c===" "){$("#ksp").classList.add(cls);return}
+  const e=kmap[c];if(!e)return;
+  e.el.classList.add(cls);
+  if(e.sh)document.querySelectorAll("#kbd .ksh").forEach(x=>x.classList.add(cls));
+}
+function lhl(w){
+  document.querySelectorAll("#kbd .n,#kbd .w").forEach(e=>e.classList.remove("n","w"));
+  const c=ltarget[lin.value.length];
+  if(c!==undefined)hl1(c,"n");
+  if(w!==undefined)hl1(w,"w");
+}
+lin.addEventListener("input",()=>{
+  if(ldone)return;
+  let v=lin.value;
+  if(v.length>ltarget.length){v=v.slice(0,ltarget.length);lin.value=v}
+  if(!lstart){lstart=Date.now();ltmr=setInterval(lstats,300)}
+  let bad;
+  for(let i=lprev;i<v.length;i++){lkeys++;if(v[i]!==ltarget[i]){lerr++;bad=v[i]}}
+  lprev=v.length;
+  ldraw();lstats();lhl(bad);
+  if(bad!==undefined)setTimeout(()=>lhl(),250);
+  if(v.length>=ltarget.length){
+    ldone=true;clearInterval(ltmr);lin.disabled=true;
+    let c=0;for(let i=0;i<v.length;i++)if(v[i]===ltarget[i])c++;
+    showRes((Date.now()-lstart)/1000,c,lkeys?Math.round((1-lerr/lkeys)*100):100);
+  }
+});
+
+/* ---------- พิมพ์ตามเพลง ---------- */
+const gin=$("#gin");
+gin.addEventListener("paste",e=>e.preventDefault());
+let glines=[],gi=0,gdone=false,gstart=0,gerr=0,gkeys=0,gprev=0,gok=0;
+function rline(str,t){
+  const len=t.length;let h="",w="";
+  for(const m of str.matchAll(/\P{M}\p{M}*/gu)){
+    const s=m.index,e=s+m[0].length;
+    let cls="";
+    if(len>s){let b=false;for(let i=s;i<Math.min(e,len);i++)if(t[i]!==str[i])b=true;cls=b?"bad":(len>=e?"ok":"")}
+    if(len>=s&&len<e&&cls!=="bad")cls+=" cur";
+    const sp=m[0]===" ";
+    const sh=`<span class="${cls}${sp?" sp":""}">${m[0]}</span>`;
+    if(sp){h+=`<span class="w">${w}</span>${sh}`;w=""}else w+=sh;
+  }
+  return h+`<span class="w">${w}</span>`;
+}
+function greset(){
+  clearInterval(gtmr);gtmr=null;
+  gi=0;gdone=false;gstart=0;gerr=gkeys=gprev=gok=0;
+  gin.value="";gin.disabled=false;gdraw();gstats();
+}
+function gdraw(){$("#gline").innerHTML=rline(glines[gi]||"",gin.value)}
+function gcorrect(){const t=gin.value,l=glines[gi]||"";let c=0;for(let i=0;i<t.length;i++)if(t[i]===l[i])c++;return c}
+function gstats(){
+  const el=gstart?(Date.now()-gstart)/1000:0;
+  $("#g1").textContent=Math.min(gi+1,glines.length)+"/"+glines.length;
+  $("#g2").textContent=el>0?Math.round((gok+gcorrect())/5/(el/60)):0;
+  $("#g3").textContent=(gkeys?Math.round((1-gerr/gkeys)*100):100)+"%";
+}
+gin.addEventListener("input",()=>{
+  if(gdone)return;
+  const l=glines[gi];let v=gin.value;
+  if(v.length>l.length){v=v.slice(0,l.length);gin.value=v}
+  if(!gstart){gstart=Date.now();gtmr=setInterval(gstats,300)}
+  for(let i=gprev;i<v.length;i++){gkeys++;if(v[i]!==l[i])gerr++}
+  gprev=v.length;
+  if(v.length>=l.length){
+    gok+=gcorrect();gi++;gin.value="";gprev=0;
+    if(gi>=glines.length){
+      gdone=true;clearInterval(gtmr);gin.disabled=true;gstats();
+      $("#g1").textContent=glines.length+"/"+glines.length;
+      showRes((Date.now()-gstart)/1000,gok,gkeys?Math.round((1-gerr/gkeys)*100):100);return;
+    }
+  }
+  gdraw();gstats();
+});
+
+const ytSrc=(id,auto)=>`https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0${auto?"&autoplay=1":""}`;
+function ytId(u){const m=u.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/|\/live\/)([\w-]{11})/);return m?m[1]:""}
+function loadVid(){
+  const id=ytId($("#slink").value.trim());
+  if(!id||id===vid)return !!id;
+  vid=id;
+  $("#vwrap").innerHTML=`<div class="vid"><iframe src="${ytSrc(id,false)}" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">ถ้าวิดีโอไม่แสดง ให้เปิดใน YouTube หรือเลือกไฟล์เสียงแทน</a>`;
+  return true;
+}
+function restartMedia(){
+  const a=$("#vwrap audio");if(a){a.currentTime=0;a.play().catch(()=>{})}
+  const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,true);
+}
+$("#slink").addEventListener("input",loadVid);
+$("#sfile").onchange=e=>{const f=e.target.files[0];if(!f)return;vid="";$("#slink").value="";$("#smsg").textContent="เลือกแล้ว: "+f.name;$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:14px"></audio>'};
+$("#sgo").onclick=()=>{
+  
+  
+  const link=$("#slink").value.trim();
+  if(link&&!loadVid()){$("#smsg").textContent="ลิงก์ YouTube ไม่ถูกต้อง";return}
+  const lines=$("#slyr").value.split(/\r?\n/).map(s=>s.trim().replace(/\s+/g," ")).filter(Boolean);
+  if(!lines.length){$("#smsg").textContent="ใส่เนื้อเพลงก่อนนะ";return}
+  glines=lines;
+  
+  $("#smsg").textContent="";songTyping=true;buildOpts();reset();gin.focus();
+  restartMedia();
+};
+
+/* ---------- ปุ่มต่างๆ ---------- */
+$("#reset").onclick=()=>{
+  reset();
+  if(mode==="song"){restartMedia();gin.focus()}
+  else (mode==="letter"?lin:inp).focus();
+};
+$("#tabs").onclick=e=>{
+  const b=e.target.closest("button");if(!b)return;
+  mode=b.dataset.m;
+  if(mode!=="song"){const a=$("#vwrap audio");if(a)a.pause();const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  buildOpts();reset();
+};
+$("#opts").onclick=e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.d)dur=+b.dataset.d;
+  if(b.dataset.p)les=b.dataset.p;
+  if(b.dataset.e){songTyping=false;const a=$("#vwrap audio");if(a)a.pause();const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
+  buildOpts();reset();
+};
+$("#langs").onclick=e=>{
+  const b=e.target.closest("button");if(!b)return;
+  lang=b.dataset.l;
+  document.querySelectorAll("#langs button").forEach(x=>x.classList.toggle("on",x===b));
+  KB=lang==="en"?KB_EN:KB_TH;LESSONS=lang==="en"?LES_EN:LES_TH;les="h";
+  for(const k in kmap)delete kmap[k];
+  $("#hint1").textContent=lang==="en"?"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาอังกฤษ)":"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)";
+  buildKb();buildOpts();reset();
+};
+buildKb();buildOpts();reset();
+</script>
+</body>
+</html>
