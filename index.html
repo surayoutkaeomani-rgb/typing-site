@@ -60,26 +60,49 @@ textarea.inp{height:200px;resize:vertical}
 .k.n{background:var(--ok);color:#fff;border-color:var(--ok)}
 .k.n s{color:#fff}
 .k.w{background:var(--bad);color:#fff;border-color:var(--bad)}
+#side{display:none;margin-bottom:14px}
+body.ws #side{display:block}
+#slist{max-height:240px;overflow:auto;margin-bottom:8px}
+.si{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.si .n{flex:1;min-width:0;text-align:left;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:600 14px inherit;font-family:inherit;padding:9px 12px;border-radius:10px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si .n.on{border-color:var(--ac);color:var(--ac)}
+.si .x{border:0;background:none;color:var(--mut);font-size:15px;cursor:pointer;padding:6px;font-family:inherit}
+@media(min-width:860px){
+  body.ws{max-width:960px}
+  body.ws .layout{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
+  body.ws #side{margin-bottom:0;position:sticky;top:16px}
+}
 </style>
 </head>
 <body>
 <h1>⌨️ ฝึกพิมพ์ดีดปวช3</h1>
+<div class="layout">
+<aside id="side">
+  <div class="tt" style="margin-top:0">🎵 เพลงของฉัน</div>
+  <div id="slist"></div>
+  <button class="chip" id="snew">+ เพลงใหม่</button>
+  <div class="hint" style="margin-top:10px">เพลงที่บันทึกไว้เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ได้อัปโหลดขึ้นเว็บ</div>
+  <div class="opts" style="margin-top:8px"><button class="chip" id="sexp">สำรองข้อมูล</button><button class="chip" id="simp">นำเข้า</button><input type="file" id="simpf" accept=".json" hidden></div>
+</aside>
+<div id="main">
 <div class="opts" id="langs" style="margin:0 0 12px"><button class="chip on" data-l="th">ไทย</button><button class="chip" data-l="en">English</button></div>
 <div class="tabs" id="tabs">
-  <button data-m="time" class="on">จับเวลา</button>
+  <button data-m="song" class="on">ตามเพลง</button>
+  <button data-m="time">จับเวลา</button>
   <button data-m="type">พิมพ์</button>
   <button data-m="letter">ฝึกแป้น</button>
-  <button data-m="song">ตามเพลง</button>
+  
 </div>
 <div class="opts" id="opts"></div>
 <div id="vwrap" hidden></div>
 <div id="sp" hidden>
-  
+  <input id="stitle" class="inp" placeholder="ชื่อเพลง">
   <input id="slink" class="inp" placeholder="วางลิงก์ YouTube (ถ้ามี)" inputmode="url" autocapitalize="off" autocorrect="off">
   <label class="chip" style="display:inline-block;margin-top:12px;cursor:pointer">🎵 เลือกไฟล์เสียง (mp3 / mp4)<input type="file" id="sfile" accept="audio/*,video/mp4,.mp3,.mp4" hidden></label>
   <textarea id="slyr" class="inp" placeholder="วางหรือพิมพ์เนื้อเพลงที่นี่ (1 บรรทัด = 1 ท่อน)"></textarea>
   <div class="hint" id="smsg"></div>
   <button class="go" id="sgo">เริ่มพิมพ์ตามเนื้อเพลง</button>
+  <button class="go" id="ssave" style="background:var(--card);color:var(--tx);border:1px solid var(--ln)">💾 บันทึกเพลงนี้ไว้ในรายการ</button>
 </div>
 
 <div id="std">
@@ -120,6 +143,8 @@ textarea.inp{height:200px;resize:vertical}
 <div class="res" id="res" hidden></div>
 <button class="go" id="reset">เริ่มใหม่</button>
 
+</div>
+</div>
 <script>
 const $=s=>document.querySelector(s);
 const WORDS="ผม เธอ เรา ไป มา กิน ข้าว น้ำ บ้าน โรงเรียน เพื่อน ครู หนังสือ อ่าน เขียน เล่น เกม ดนตรี ร้องเพลง ทะเล ภูเขา ต้นไม้ ดอกไม้ ท้องฟ้า ดวงดาว แมว หมา ปลา นก รถ เรือ เครื่องบิน ตลาด ร้านค้า อาหาร อร่อย สนุก ทำงาน พักผ่อน วันนี้ พรุ่งนี้ เมื่อวาน เช้า เย็น กลางคืน ฝนตก แดดออก อากาศดี ขอบคุณ สวัสดี ยินดี ตั้งใจ พยายาม ฝึกฝน รวดเร็ว แม่นยำ".split(" ");
@@ -162,7 +187,7 @@ const box=$("#box"),res=$("#res");
 const inp=document.createElement("textarea");
 inp.className="ov";inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
 inp.addEventListener("paste",e=>e.preventDefault());
-let mode="time",dur=60,les="h";
+let mode="song",dur=60,les="h";
 let songTyping=false,gtmr=null,vid="";
 let target="",started=0,done=false,errs=0,keys=0,prev=0,tmr=null;
 
@@ -178,6 +203,7 @@ function reset(){
   clearInterval(tmr);tmr=null;clearInterval(ltmr);ltmr=null;clearInterval(gtmr);gtmr=null;
   res.hidden=true;
   const S=mode==="song",setup=S&&!songTyping;
+  document.body.classList.toggle("ws",S);
   $("#std").hidden=mode==="letter"||S;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);
   $("#vwrap").hidden=!S;$("#sp").hidden=!setup;$("#reset").hidden=setup;
   if(S){loadVid();if(songTyping)greset();return}
@@ -320,6 +346,97 @@ lin.addEventListener("input",()=>{
 });
 
 /* ---------- พิมพ์ตามเพลง ---------- */
+/* ---------- เพลงของฉัน (เก็บในเบราว์เซอร์) ---------- */
+const LSK="typing_songs_v1";
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let songs=[],curId=null,curBlob=null,curName="",adb=null;
+try{songs=JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){songs=[]}
+function saveSongs(){try{localStorage.setItem(LSK,JSON.stringify(songs))}catch(e){$("#smsg").textContent="บันทึกไม่ได้ (พื้นที่เต็มหรือเบราว์เซอร์ปิดการเก็บข้อมูล)"}}
+function idb(){
+  return new Promise((res,rej)=>{
+    if(adb)return res(adb);
+    let r;try{r=indexedDB.open("typing_audio",1)}catch(e){return rej(e)}
+    r.onupgradeneeded=()=>r.result.createObjectStore("a");
+    r.onsuccess=()=>{adb=r.result;res(adb)};
+    r.onerror=()=>rej(r.error);
+  });
+}
+const putAudio=(id,blob)=>idb().then(d=>new Promise((res,rej)=>{const t=d.transaction("a","readwrite");t.objectStore("a").put(blob,id);t.oncomplete=res;t.onerror=()=>rej(t.error)}));
+const getAudio=id=>idb().then(d=>new Promise((res,rej)=>{const q=d.transaction("a").objectStore("a").get(id);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
+const delAudio=id=>idb().then(d=>new Promise(res=>{const t=d.transaction("a","readwrite");t.objectStore("a").delete(id);t.oncomplete=res;t.onerror=res}));
+function showAudio(blob){$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(blob)+'" style="width:100%;margin-top:14px"></audio>'}
+function renderSongs(){
+  $("#slist").innerHTML=songs.length
+    ?songs.map(s=>`<div class="si"><button class="n ${s.id===curId?"on":""}" data-id="${esc(s.id)}">${esc(s.title)}</button><button class="x" data-del="${esc(s.id)}" title="ลบ">✕</button></div>`).join("")
+    :'<div class="hint" style="margin-bottom:8px">ยังไม่มีเพลงที่บันทึกไว้</div>';
+}
+function newSong(){
+  curId=null;curBlob=null;curName="";
+  $("#stitle").value="";$("#slink").value="";$("#slyr").value="";$("#smsg").textContent="";
+  vid="";const a=$("#vwrap audio");if(a)a.pause();
+  $("#vwrap").innerHTML="";renderSongs();
+}
+$("#snew").onclick=()=>{songTyping=false;newSong();buildOpts();reset()};
+$("#slist").onclick=async e=>{
+  const d=e.target.closest("button[data-del]");
+  if(d){
+    if(d.dataset.arm!=="1"){d.dataset.arm="1";d.textContent="ลบ?";setTimeout(()=>{d.dataset.arm="";d.textContent="✕"},3000);return}
+    const id=d.dataset.del;
+    songs=songs.filter(x=>x.id!==id);saveSongs();delAudio(id).catch(()=>{});
+    if(curId===id)newSong();
+    renderSongs();return;
+  }
+  const b=e.target.closest("button[data-id]");if(!b)return;
+  const s=songs.find(x=>x.id===b.dataset.id);if(!s)return;
+  songTyping=false;
+  const a0=$("#vwrap audio");if(a0)a0.pause();
+  curId=s.id;curBlob=null;curName=s.fileName||"";
+  $("#stitle").value=s.title;$("#slyr").value=s.lyrics;$("#slink").value=s.link||"";
+  vid="";$("#vwrap").innerHTML="";$("#smsg").textContent="";
+  buildOpts();reset();renderSongs();
+  if(s.hasAudio){
+    try{const blob=await getAudio(s.id);if(blob){curBlob=blob;if(!ytId($("#slink").value))showAudio(blob)}}
+    catch(err){$("#smsg").textContent="เปิดไฟล์เสียงที่บันทึกไว้ไม่ได้ ลองเลือกไฟล์ใหม่"}
+  }
+};
+$("#ssave").onclick=async()=>{
+  const title=$("#stitle").value.trim()||"เพลงไม่มีชื่อ";
+  const lyr=$("#slyr").value.trim();
+  if(!lyr){$("#smsg").textContent="ใส่เนื้อเพลงก่อนบันทึกนะ";return}
+  let s=songs.find(x=>x.id===curId);
+  if(!s){s={id:"s"+Date.now()};songs.push(s);curId=s.id}
+  s.title=title;s.lyrics=lyr;s.link=$("#slink").value.trim();
+  let msg="บันทึกแล้ว: "+title;
+  if(curBlob){
+    try{await putAudio(s.id,curBlob);s.hasAudio=true;s.fileName=curName}
+    catch(e){msg="บันทึกเนื้อเพลงแล้ว แต่เก็บไฟล์เสียงไม่ได้ (พื้นที่เต็มหรือเบราว์เซอร์ไม่อนุญาต)"}
+  }
+  saveSongs();renderSongs();$("#smsg").textContent=msg;
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+};
+$("#sexp").onclick=()=>{
+  const data=JSON.stringify({v:1,songs:songs.map(({id,title,lyrics,link,fileName})=>({id,title,lyrics,link,fileName}))},null,1);
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
+  a.download="my-songs-backup.json";a.click();
+};
+$("#simp").onclick=()=>$("#simpf").click();
+$("#simpf").onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    const j=JSON.parse(await f.text());let n=0;
+    (j.songs||[]).forEach(x=>{
+      if(!x||!x.lyrics)return;
+      const id=x.id||("s"+Date.now()+Math.random());
+      if(songs.some(y=>y.id===id))return;
+      songs.push({id,title:x.title||"เพลง",lyrics:x.lyrics,link:x.link||"",fileName:x.fileName||"",hasAudio:false});n++;
+    });
+    saveSongs();renderSongs();
+    $("#smsg").textContent="นำเข้า "+n+" เพลงแล้ว (ไฟล์เสียงไม่อยู่ในไฟล์สำรอง ต้องเลือกไฟล์ใหม่ในแต่ละเพลง)";
+  }catch(err){$("#smsg").textContent="ไฟล์สำรองไม่ถูกต้อง"}
+  e.target.value="";
+};
+renderSongs();
 const gin=$("#gin");
 gin.addEventListener("paste",e=>e.preventDefault());
 let glines=[],gi=0,gdone=false,gstart=0,gerr=0,gkeys=0,gprev=0,gok=0;
@@ -381,7 +498,7 @@ function restartMedia(){
   const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,true);
 }
 $("#slink").addEventListener("input",loadVid);
-$("#sfile").onchange=e=>{const f=e.target.files[0];if(!f)return;vid="";$("#slink").value="";$("#smsg").textContent="เลือกแล้ว: "+f.name;$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:14px"></audio>'};
+$("#sfile").onchange=e=>{const f=e.target.files[0];if(!f)return;curBlob=f;curName=f.name;vid="";$("#slink").value="";$("#smsg").textContent="เลือกแล้ว: "+f.name;$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:14px"></audio>'};
 $("#sgo").onclick=()=>{
   
   
