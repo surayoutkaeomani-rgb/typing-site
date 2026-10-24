@@ -3,25 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Paipimkaraoke</title><link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Paipimkaraoke</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2214%22%20fill=%22%23d9622b%22/%3E%3Cg%20fill=%22%23fff%22%3E%3Crect%20x=%229%22%20y=%2216%22%20width=%2210%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2222%22%20y=%2216%22%20width=%2210%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2235%22%20y=%2216%22%20width=%2210%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2248%22%20y=%2216%22%20width=%227%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%229%22%20y=%2229%22%20width=%2213%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2225%22%20y=%2229%22%20width=%2210%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2238%22%20y=%2229%22%20width=%2210%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2251%22%20y=%2229%22%20width=%224%22%20height=%2210%22%20rx=%222%22/%3E%3Crect%20x=%2214%22%20y=%2242%22%20width=%2236%22%20height=%229%22%20rx=%222%22/%3E%3C/g%3E%3C/svg%3E">
+<meta name="theme-color" content="#f6f5f1">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mut:#77756e;--ac:#d9622b;--ok:#2e8b57;--bad:#d03b3b;--ln:#e4e1d8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--card:#222220;--tx:#f0eee8;--mut:#9a978e;--ac:#f08a52;--ok:#4fb87d;--bad:#ff7a7a;--ln:#34332f;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#171716;--card:#222220;--tx:#f0eee8;--mut:#9a978e;--ac:#f08a52;--ok:#4fb87d;--bad:#ff7a7a;--ln:#34332f;color-scheme:dark}
+:root{--bg:#f6f5f1;--panel:#fbfaf7;--card:#fff;--tx:#1d1d1b;--mut:#77756e;--ac:#d9622b;--ok:#2e8b57;--bad:#d03b3b;--ln:#e4e1d8;--ln2:#d3cec2;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--panel:#1c1c1a;--card:#222220;--tx:#f0eee8;--mut:#9a978e;--ac:#f08a52;--ok:#4fb87d;--bad:#ff7a7a;--ln:#34332f;--ln2:#46443f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171716;--panel:#1c1c1a;--card:#222220;--tx:#f0eee8;--mut:#9a978e;--ac:#f08a52;--ok:#4fb87d;--bad:#ff7a7a;--ln:#34332f;--ln2:#46443f;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--tx);font-family:'Sarabun','Noto Sans Thai',system-ui,sans-serif;padding:16px;max-width:640px;margin:0 auto}
-h1{font-size:22px;margin:4px 0 14px}
-.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:4px}
-.tabs button{flex:1;border:0;background:none;color:var(--mut);font:600 15px inherit;font-family:inherit;padding:10px 4px;border-radius:10px;cursor:pointer}
+body{background:var(--bg);color:var(--tx);font-family:'Sarabun','Noto Sans Thai',system-ui,sans-serif;font-size:16px}
+button,input,textarea{font-family:inherit}
+.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic.big{width:28px;height:28px;color:var(--ac)}
+.app{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:270px 1fr;min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.side{background:var(--panel);border-right:1px solid var(--ln);padding:26px 18px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:12px;align-items:center}
+.brand b{display:block;font-size:20px}
+.brand small{color:var(--mut);font-size:13px}
+#slist{margin-bottom:8px}
+.si{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.si .n{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:15px;font-weight:600;padding:11px 12px;border-radius:12px;cursor:pointer}
+.si .n span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si .n .ic{color:var(--mut)}
+.si .n.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,var(--card))}
+.si .n.on .ic{color:var(--ac)}
+.si .x{border:0;background:none;color:var(--mut);font-size:14px;cursor:pointer;padding:8px}
+.newbtn{display:flex;align-items:center;gap:10px;width:100%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:15px;font-weight:600;padding:11px 12px;border-radius:12px;cursor:pointer}
+.bk{display:flex;gap:8px;flex-wrap:wrap}
+.quote{margin-top:auto;display:flex;gap:10px;align-items:flex-start;color:var(--mut);font-size:14px;font-style:italic}
+.quote .ic{color:var(--ac);width:22px;height:22px}
+.main{padding:28px 32px 56px;max-width:840px;width:100%}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.phl{display:flex;gap:12px;align-items:center}
+.ph h1{margin:0;font-size:24px}
+.ph p{margin:2px 0 0;color:var(--mut);font-size:14px}
+.lang{display:flex;gap:6px;flex:none}
+.tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--ln);border-radius:14px;padding:5px}
+.tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:0;background:none;color:var(--mut);font-size:15px;font-weight:600;padding:11px 6px;border-radius:10px;cursor:pointer}
 .tabs button.on{background:var(--ac);color:#fff}
 .opts{display:flex;gap:8px;margin:14px 0 0;flex-wrap:wrap;align-items:center;min-height:36px}
-.chip{border:1px solid var(--ln);background:var(--card);color:var(--tx);font:600 14px inherit;font-family:inherit;padding:7px 14px;border-radius:99px;cursor:pointer}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:14px;font-weight:600;padding:8px 14px;border-radius:99px;cursor:pointer}
 .chip.on{border-color:var(--ac);color:var(--ac)}
 .hint{color:var(--mut);font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-.stats div{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 4px;text-align:center}
+.hint.c{text-align:center;margin-top:12px}
+.fl{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;margin:20px 0 8px}
+.fl .ic{color:var(--tx)}
+.fi{position:relative}
+.fi .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mut);pointer-events:none}
+.inp{display:block;width:100%;font-size:16px;border:1px solid var(--ln);border-radius:12px;padding:13px 14px;background:var(--card);color:var(--tx);outline:0}
+.fi .inp{padding-left:42px}
+.inp:focus,#lin:focus,#gin:focus{border-color:var(--ac)}
+.ta{position:relative}
+textarea.inp{height:150px;resize:vertical}
+.cnt{position:absolute;right:14px;bottom:10px;font-size:12px;color:var(--mut)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;border:2px dashed var(--ln2);border-radius:14px;padding:26px 14px;text-align:center;color:var(--mut);cursor:pointer;background:color-mix(in srgb,var(--card) 60%,transparent)}
+.drop .ic.big{color:var(--mut)}
+.drop small{font-size:12px}
+.drop.over,.drop.has{border-color:var(--ac);color:var(--tx)}
+.drop.has .ic.big{color:var(--ac)}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:14px;border:0;background:var(--ac);color:#fff;font-size:16px;font-weight:700;padding:14px;border-radius:12px;cursor:pointer}
+.go.sec{background:var(--card);color:var(--tx);border:1px solid var(--ln)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.stats div{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px 4px;text-align:center}
 .stats b{display:block;font-size:22px}
 .stats span{font-size:12px;color:var(--mut)}
 .box{position:relative;background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:18px;min-height:190px;font-size:24px;line-height:2;white-space:pre-wrap;word-break:break-word;cursor:text}
@@ -33,117 +78,152 @@ textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:no
 .res{background:var(--card);border:2px solid var(--ac);border-radius:16px;padding:16px;margin-top:14px;text-align:center}
 .res h2{margin:0 0 6px;font-size:20px}
 .res p{margin:4px 0;color:var(--mut)}
-.go{display:block;width:100%;margin-top:14px;border:0;background:var(--ac);color:#fff;font:700 16px inherit;font-family:inherit;padding:13px;border-radius:12px;cursor:pointer}
-.hint.c{text-align:center;margin-top:12px}
-.vid{position:relative;aspect-ratio:16/9;margin-top:14px;border-radius:14px;overflow:hidden;background:#000}
+.tt{font-weight:700;margin:6px 0 8px}
+.vid{position:relative;aspect-ratio:16/9;margin-top:16px;border-radius:14px;overflow:hidden;background:#000}
 .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 #vwrap a{display:block;text-align:center;margin-top:6px;font-size:13px;color:var(--mut)}
-.tt{font-weight:700;margin:14px 0 8px}
-.inp{display:block;width:100%;margin-top:12px;font-size:16px;font-family:inherit;border:1px solid var(--ln);border-radius:12px;padding:12px;background:var(--card);color:var(--tx)}
-textarea.inp{height:200px;resize:vertical}
 .line{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;font-size:28px;line-height:1.9;white-space:pre-wrap;min-height:76px}
 .line .w{display:inline-block;white-space:nowrap}
-#gline .w{display:inline;white-space:normal}
-#gline{font-size:26px;overflow-wrap:anywhere;word-break:break-word}
 .line .cw{border-bottom:3px solid var(--ac)}
 .line .ok{color:var(--ok)}
 .line .bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent);border-radius:4px}
 .line .cur{color:var(--ac);font-weight:700}
 .line .sp.cur{border-bottom:3px solid var(--ac)}
-#lin,#gin{width:100%;height:96px;margin-top:10px;font-size:22px;font-family:inherit;border:2px solid #6cb4f0;border-radius:12px;padding:10px;background:var(--card);color:var(--tx);resize:none}
+#gline .w{display:inline;white-space:normal}
+#gline{font-size:26px;overflow-wrap:anywhere;word-break:break-word}
+#lin,#gin{width:100%;height:96px;margin-top:10px;font-size:22px;border:2px solid var(--ln2);border-radius:12px;padding:10px;background:var(--card);color:var(--tx);resize:none;outline:0}
 .kbd{margin-top:12px;user-select:none;-webkit-user-select:none}
 .kr{display:flex;gap:3px;margin-bottom:3px}
 .k{flex:1;min-width:0;height:34px;position:relative;background:var(--card);border:1px solid var(--ln);border-radius:6px;font-size:13px;font-style:normal;color:var(--tx)}
 .k s{position:absolute;left:3px;top:1px;font-size:9px;color:var(--mut);text-decoration:none}
 .k b{position:absolute;right:3px;bottom:1px;font-weight:400}
 .k.m{display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:10px}
-.k.n{background:var(--ok);color:#fff;border-color:var(--ok)}
+.k.n{background:var(--ac);color:#fff;border-color:var(--ac)}
 .k.n s{color:#fff}
 .k.w{background:var(--bad);color:#fff;border-color:var(--bad)}
-#side{display:none;margin-bottom:14px}
-body.ws #side{display:block}
-#slist{max-height:240px;overflow:auto;margin-bottom:8px}
-.si{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.si .n{flex:1;min-width:0;text-align:left;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:600 14px inherit;font-family:inherit;padding:9px 12px;border-radius:10px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.si .n.on{border-color:var(--ac);color:var(--ac)}
-.si .x{border:0;background:none;color:var(--mut);font-size:15px;cursor:pointer;padding:6px;font-family:inherit}
-@media(min-width:860px){
-  body.ws{max-width:960px}
-  body.ws .layout{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
-  body.ws #side{margin-bottom:0;position:sticky;top:16px}
+.chart{display:flex;align-items:flex-end;gap:6px;height:160px;padding:12px 10px 10px;background:var(--card);border:1px solid var(--ln);border-radius:14px}
+.bar{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.bar i{display:block;width:100%;max-width:34px;background:var(--ac);border-radius:6px 6px 2px 2px;min-height:3px}
+.bar.best i{background:var(--ok)}
+.bar em{font-style:normal;font-size:11px;color:var(--mut)}
+.slog{background:var(--card);border:1px solid var(--ln);border-radius:14px;overflow:hidden;margin-top:6px}
+.lr{display:grid;grid-template-columns:1fr 1.4fr auto auto;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--ln);font-size:14px}
+.lr:last-child{border-bottom:0}
+.lr span:first-child{color:var(--mut);font-size:12px}
+.lr b{color:var(--ac)}
+.empty{text-align:center;color:var(--mut);padding:28px 12px;width:100%}
+.songs{display:block}
+@media(max-width:859px){
+  .app{display:block}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--ln);padding:16px;gap:12px}
+  .songs{display:none}
+  body.ws .songs{display:block}
+  .quote{display:none}
+  .main{padding:18px 16px 48px}
+  .ph h1{font-size:21px}
+}
+@media(max-width:480px){
+  .tabs button{font-size:13px;gap:5px;padding:10px 2px}
+  .tabs .ic{display:none}
 }
 </style>
 </head>
 <body>
-<h1>⌨️ Paipimkaraoke</h1>
-<div class="layout">
-<aside id="side">
-  <div class="tt" style="margin-top:0">🎵 เพลงของฉัน</div>
-  <div id="slist"></div>
-  <button class="chip" id="snew">+ เพลงใหม่</button>
-  <div class="hint" style="margin-top:10px">เพลงที่บันทึกไว้เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ได้อัปโหลดขึ้นเว็บ</div>
-  <div class="opts" style="margin-top:8px"><button class="chip" id="sexp">สำรองข้อมูล</button><button class="chip" id="simp">นำเข้า</button><input type="file" id="simpf" accept=".json" hidden></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="i-kbd" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></symbol><symbol id="i-upload" viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-.5-8A6 6 0 0118 8.5 4.5 4.5 0 0117.5 18"/><path d="M12 18v-6M9 14l3-3 3 3"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></symbol><symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></symbol><symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol></defs></svg>
+<div class="app">
+<aside id="side" class="side">
+  <div class="brand"><svg class="ic big"><use href="#i-note"/></svg><div><b>Paipimkaraoke</b><small>สร้างเพลงของคุณได้ง่ายๆ</small></div></div>
+  <div class="songs">
+    <div id="slist"></div>
+    <button class="newbtn" id="snew"><svg class="ic"><use href="#i-plus"/></svg>เพลงใหม่</button>
+    <p class="hint">เพลงที่สร้างจะถูกเก็บไว้ในรายการ เพื่อให้คุณกลับมาแก้ไขได้ตลอดเวลา (เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ได้อัปโหลดขึ้นเว็บ)</p>
+    <div class="bk"><button class="chip" id="sexp"><svg class="ic"><use href="#i-folder"/></svg>สำรองข้อมูล</button><button class="chip" id="simp"><svg class="ic"><use href="#i-import"/></svg>นำเข้า</button><input type="file" id="simpf" accept=".json" hidden></div>
+  </div>
+  <div class="quote"><svg class="ic"><use href="#i-note"/></svg><span>“ให้เสียงเพลง<br>เป็นพื้นที่ของคุณ”</span></div>
 </aside>
-<div id="main">
-<div class="opts" id="langs" style="margin:0 0 12px"><button class="chip on" data-l="th">ไทย</button><button class="chip" data-l="en">English</button></div>
-<div class="tabs" id="tabs">
-  <button data-m="song" class="on">ตามเพลง</button>
-  <button data-m="time">จับเวลา</button>
-  <button data-m="type">พิมพ์</button>
-  <button data-m="letter">ฝึกแป้น</button>
-  
-</div>
-<div class="opts" id="opts"></div>
-<div id="vwrap" hidden></div>
-<div id="sp" hidden>
-  <input id="stitle" class="inp" placeholder="ชื่อเพลง">
-  <input id="slink" class="inp" placeholder="วางลิงก์ YouTube (ถ้ามี)" inputmode="url" autocapitalize="off" autocorrect="off">
-  <label class="chip" style="display:inline-block;margin-top:12px;cursor:pointer">🎵 เลือกไฟล์เสียง (mp3 / mp4)<input type="file" id="sfile" accept="audio/*,video/mp4,.mp3,.mp4" hidden></label>
-  <textarea id="slyr" class="inp" placeholder="วางหรือพิมพ์เนื้อเพลงที่นี่ (1 บรรทัด = 1 ท่อน)"></textarea>
-  <div class="hint" id="smsg"></div>
-  <button class="go" id="sgo">เริ่มพิมพ์ตามเนื้อเพลง</button>
-  <button class="go" id="ssave" style="background:var(--card);color:var(--tx);border:1px solid var(--ln)">💾 บันทึกเพลงนี้ไว้ในรายการ</button>
-</div>
-
-<div id="std">
-  <div class="stats">
-    <div><b id="v1">0</b><span id="l1"></span></div>
-    <div><b id="v2">0</b><span id="l2"></span></div>
-    <div><b id="v3">0</b><span id="l3"></span></div>
+<main class="main">
+  <header class="ph">
+    <div class="phl"><svg class="ic big" id="phi"><use href="#i-pencil"/></svg><div><h1 id="pht">สร้างเพลงใหม่</h1><p id="phs"></p></div></div>
+    <div class="lang" id="langs"><button class="chip on" data-l="th">ไทย</button><button class="chip" data-l="en">English</button></div>
+  </header>
+  <nav class="tabs" id="tabs">
+    <button data-m="song" class="on"><svg class="ic"><use href="#i-note"/></svg>ตามเพลง</button>
+    <button data-m="time"><svg class="ic"><use href="#i-clock"/></svg>จับเวลา</button>
+    <button data-m="type"><svg class="ic"><use href="#i-kbd"/></svg>พิมพ์</button>
+    <button data-m="letter"><svg class="ic"><use href="#i-bars"/></svg>ฝึกแป้น</button>
+    <button data-m="stats"><svg class="ic"><use href="#i-chart"/></svg>สถิติ</button>
+  </nav>
+  <div class="opts" id="opts"></div>
+  <div id="vwrap" hidden></div>
+  <div id="sp" hidden>
+    <div class="fl"><svg class="ic"><use href="#i-doc"/></svg>ชื่อเพลง</div>
+    <div class="fi"><svg class="ic"><use href="#i-note"/></svg><input id="stitle" class="inp" placeholder="ชื่อเพลง"></div>
+    <div class="fl"><svg class="ic"><use href="#i-play"/></svg>ลิงก์ YouTube (ถ้ามี)</div>
+    <div class="fi"><svg class="ic"><use href="#i-link"/></svg><input id="slink" class="inp" placeholder="https://www.youtube.com/..." inputmode="url" autocapitalize="off" autocorrect="off"></div>
+    <div class="fl"><svg class="ic"><use href="#i-note"/></svg>ไฟล์เสียง (mp3 / mp4)</div>
+    <label class="drop" id="drop"><svg class="ic big"><use href="#i-upload"/></svg><span id="dropt">ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์</span><small>รองรับไฟล์ mp3 / mp4</small><input type="file" id="sfile" accept="audio/*,video/mp4,.mp3,.mp4" hidden></label>
+    <div class="fl"><svg class="ic"><use href="#i-doc"/></svg>เนื้อเพลง</div>
+    <div class="ta"><textarea id="slyr" class="inp" maxlength="10000" placeholder="วางหรือพิมพ์เนื้อเพลงที่นี่ (1 บรรทัด = 1 ท่อน)"></textarea><span class="cnt" id="cnt">0/10000</span></div>
+    <div class="hint" id="smsg" style="margin-top:8px"></div>
+    <button class="go" id="sgo"><svg class="ic"><use href="#i-play"/></svg>เริ่มพิมพ์ตามเนื้อเพลง</button>
+    <button class="go sec" id="ssave"><svg class="ic"><use href="#i-save"/></svg>บันทึกเพลงนี้ไว้ในรายการ</button>
   </div>
-  <div class="box" id="box"></div>
-  <div class="hint c" id="hint1">แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)</div>
-</div>
 
-<div id="lp" hidden>
-  <div class="tt" id="ltitle"></div>
-  <div class="stats">
-    <div><b id="s1">0</b><span>สัญลักษณ์</span></div>
-    <div><b id="s2">0%</b><span>ความก้าวหน้า</span></div>
-    <div><b id="s3">0</b><span>ค่า/นาที</span></div>
-    <div><b id="s4">0</b><span>ข้อผิดพลาด</span></div>
-    <div><b id="s5">100%</b><span>ความถูกต้อง</span></div>
-    <div><b id="s6">00:00</b><span>เวลา</span></div>
+  <div id="std">
+    <div class="stats">
+      <div><b id="v1">0</b><span id="l1"></span></div>
+      <div><b id="v2">0</b><span id="l2"></span></div>
+      <div><b id="v3">0</b><span id="l3"></span></div>
+    </div>
+    <div class="box" id="box"></div>
+    <div class="hint c" id="hint1">แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)</div>
   </div>
-  <div class="line" id="line"></div>
-  <textarea id="lin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์ที่นี่..."></textarea>
-  <div class="kbd" id="kbd"></div>
-</div>
 
-<div id="sg" hidden>
-  <div class="stats">
-    <div><b id="g1">0/0</b><span>บรรทัด</span></div>
-    <div><b id="g2">0</b><span>WPM</span></div>
-    <div><b id="g3">100%</b><span>ความแม่นยำ</span></div>
+  <div id="lp" hidden>
+    <div class="tt" id="ltitle"></div>
+    <div class="stats">
+      <div><b id="s1">0</b><span>สัญลักษณ์</span></div>
+      <div><b id="s2">0%</b><span>ความก้าวหน้า</span></div>
+      <div><b id="s3">0</b><span>ค่า/นาที</span></div>
+      <div><b id="s4">0</b><span>ข้อผิดพลาด</span></div>
+      <div><b id="s5">100%</b><span>ความถูกต้อง</span></div>
+      <div><b id="s6">00:00</b><span>เวลา</span></div>
+    </div>
+    <div class="line" id="line"></div>
+    <textarea id="lin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์ที่นี่..."></textarea>
+    <div class="kbd" id="kbd"></div>
   </div>
-  <div class="line" id="gline"></div>
-  <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์บรรทัดนี้..."></textarea>
-</div>
 
-<div class="res" id="res" hidden></div>
-<button class="go" id="reset">เริ่มใหม่</button>
+  <div id="sg" hidden>
+    <div class="stats">
+      <div><b id="g1">0/0</b><span>บรรทัด</span></div>
+      <div><b id="g2">0</b><span>WPM</span></div>
+      <div><b id="g3">100%</b><span>ความแม่นยำ</span></div>
+    </div>
+    <div class="line" id="gline"></div>
+    <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์บรรทัดนี้..."></textarea>
+  </div>
 
-</div>
+  <div id="st" hidden>
+    <div class="stats">
+      <div><b id="t1">0</b><span>WPM สูงสุด</span></div>
+      <div><b id="t2">0</b><span>WPM เฉลี่ย</span></div>
+      <div><b id="t3">0%</b><span>ความแม่นยำเฉลี่ย</span></div>
+      <div><b id="t4">0</b><span>จำนวนครั้ง</span></div>
+      <div><b id="t5">0</b><span>เวลาฝึกรวม</span></div>
+      <div><b id="t6">0</b><span>WPM ล่าสุด</span></div>
+    </div>
+    <div class="tt">ความเร็วล่าสุด (WPM) สูงสุดเป็นสีเขียว</div>
+    <div class="chart" id="chart"></div>
+    <div class="tt" style="margin-top:18px">ประวัติการพิมพ์ล่าสุด</div>
+    <div class="slog" id="slog"></div>
+    <p class="hint">สถิติเก็บในเบราว์เซอร์ของเครื่องนี้ และรวมอยู่ในไฟล์สำรองข้อมูลด้วย</p>
+    <button class="go sec" id="sclr"><svg class="ic"><use href="#i-save"/></svg>ล้างสถิติทั้งหมด</button>
+  </div>
+
+  <div class="res" id="res" hidden></div>
+  <button class="go" id="reset"><svg class="ic"><use href="#i-play"/></svg>เริ่มใหม่</button>
+</main>
 </div>
 <script>
 const $=s=>document.querySelector(s);
@@ -187,7 +267,7 @@ const box=$("#box"),res=$("#res");
 const inp=document.createElement("textarea");
 inp.className="ov";inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
 inp.addEventListener("paste",e=>e.preventDefault());
-let mode="song",dur=60,les="h";
+let mode="song",dur=60,les="h",stF="all";
 let songTyping=false,gtmr=null,vid="";
 let target="",started=0,done=false,errs=0,keys=0,prev=0,tmr=null;
 
@@ -196,6 +276,7 @@ function buildOpts(){
   const o=$("#opts");
   if(mode==="time")o.innerHTML=[30,60,120].map(s=>`<button class="chip ${s===dur?"on":""}" data-d="${s}">${s} วินาที</button>`).join("");
   else if(mode==="letter")o.innerHTML=LESSONS.map(([k,t])=>`<button class="chip ${k===les?"on":""}" data-p="${k}">${t}</button>`).join("");
+  else if(mode==="stats")o.innerHTML=[["all","ทั้งหมด"],["song","ตามเพลง"],["time","จับเวลา"],["type","พิมพ์"],["letter","ฝึกแป้น"]].map(([k,t])=>`<button class="chip ${k===stF?"on":""}" data-sf="${k}">${t}</button>`).join("");
   else if(mode==="song")o.innerHTML=songTyping?'<button class="chip" data-e="1">✏️ แก้ไขเนื้อเพลง</button>':'<span class="hint">เลือกไฟล์เสียงแล้วใส่เนื้อเพลง</span>';
   else o.innerHTML='<span class="hint">พิมพ์ข้อความให้ครบ ไม่จำกัดเวลา</span>';
 }
@@ -204,9 +285,19 @@ function reset(){
   res.hidden=true;
   const S=mode==="song",setup=S&&!songTyping;
   document.body.classList.toggle("ws",S);
-  $("#std").hidden=mode==="letter"||S;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);
-  $("#vwrap").hidden=!S;$("#sp").hidden=!setup;$("#reset").hidden=setup;
+  const HD={song:["i-pencil","สร้างเพลงใหม่","กรอกข้อมูลด้านล่างเพื่อบันทึกเพลงและพิมพ์ตามเนื้อเพลง"],time:["i-clock","จับเวลา","ทดสอบความเร็วและความแม่นยำในเวลาที่กำหนด"],type:["i-kbd","พิมพ์","พิมพ์ข้อความให้ครบโดยไม่จำกัดเวลา"],stats:["i-chart","สถิติ","ดูความก้าวหน้าการพิมพ์ของคุณ"],letter:["i-bars","ฝึกแป้น","ฝึกตำแหน่งนิ้วทีละแถวด้วยแป้นพิมพ์บนจอ"]};
+  let hd=HD[mode];
+  if(S){
+    if(songTyping)hd=["i-note","พิมพ์ตามเพลง",$("#stitle").value.trim()||"พิมพ์ทีละบรรทัดตามเนื้อเพลง"];
+    else if(curId)hd=["i-pencil","แก้ไขเพลง","แก้ไขข้อมูล แล้วกดบันทึกหรือเริ่มพิมพ์ได้เลย"];
+    cnt();
+  }
+  $("#phi").innerHTML='<use href="#'+hd[0]+'"/>';$("#pht").textContent=hd[1];$("#phs").textContent=hd[2];
+  const ST=mode==="stats";
+  $("#std").hidden=mode==="letter"||S||ST;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);$("#st").hidden=!ST;
+  $("#vwrap").hidden=!S;$("#sp").hidden=!setup;$("#reset").hidden=setup||ST;
   if(S){loadVid();if(songTyping)greset();return}
+  if(ST){renderStats();return}
   if(mode==="letter"){lreset();return}
   inp.value="";inp.disabled=false;prev=0;errs=keys=0;started=0;done=false;
   if(setup)return;
@@ -236,6 +327,7 @@ function stats(){
 }
 function showRes(el,c,acc){
   const wpm=Math.round(c/5/(el/60));
+  recordStat(el,c,acc,wpm);
   res.hidden=false;
   res.innerHTML=`<h2>เสร็จแล้ว! 🎉</h2><p><b style="color:var(--tx);font-size:32px">${wpm}</b> WPM</p><p>แม่นยำ ${acc}% · พิมพ์ถูก ${c} ตัวอักษร · ใช้เวลา ${Math.round(el)} วินาที</p>`;
 }
@@ -347,6 +439,45 @@ lin.addEventListener("input",()=>{
 
 /* ---------- พิมพ์ตามเพลง ---------- */
 /* ---------- เพลงของฉัน (เก็บในเบราว์เซอร์) ---------- */
+/* ---------- สถิติ ---------- */
+const SK="typing_stats_v1";
+const MODEL={song:"ตามเพลง",time:"จับเวลา",type:"พิมพ์",letter:"ฝึกแป้น"};
+let hist=[];
+try{hist=JSON.parse(localStorage.getItem(SK)||"[]")}catch(e){hist=[]}
+function saveHist(){try{localStorage.setItem(SK,JSON.stringify(hist))}catch(e){}}
+function recordStat(el,c,acc,wpm){
+  if(!(el>0)||!isFinite(wpm))return;
+  let ti="";
+  if(mode==="song")ti=$("#stitle").value.trim()||"เพลงไม่มีชื่อ";
+  else if(mode==="letter")ti=(LESSONS.find(l=>l[0]===les)||[])[1]||"";
+  else if(mode==="time")ti=dur+" วินาที";
+  hist.push({t:Date.now(),m:mode,l:lang,w:wpm,a:acc,s:Math.round(el),c,ti});
+  if(hist.length>300)hist=hist.slice(-300);
+  saveHist();
+}
+function renderStats(){
+  const L=hist.filter(x=>stF==="all"||x.m===stF),n=L.length;
+  const best=n?Math.max(...L.map(x=>x.w)):0;
+  const avg=n?Math.round(L.reduce((a,x)=>a+x.w,0)/n):0;
+  const acc=n?Math.round(L.reduce((a,x)=>a+x.a,0)/n):0;
+  const sec=L.reduce((a,x)=>a+x.s,0);
+  const tm=sec>=3600?Math.floor(sec/3600)+" ชม. "+Math.round(sec%3600/60)+" น.":Math.round(sec/60)+" นาที";
+  $("#t1").textContent=best;$("#t2").textContent=avg;$("#t3").textContent=acc+"%";
+  $("#t4").textContent=n;$("#t5").textContent=tm;$("#t6").textContent=n?L[n-1].w:0;
+  const R=L.slice(-15),mx=Math.max(10,...R.map(x=>x.w));
+  $("#chart").innerHTML=R.length
+    ?R.map(x=>`<div class="bar${x.w===best?" best":""}"><em>${x.w}</em><i style="height:${Math.max(3,Math.round(x.w/mx*80))}%"></i></div>`).join("")
+    :'<div class="empty">ยังไม่มีสถิติ ลองพิมพ์ให้จบสักรอบ</div>';
+  $("#slog").innerHTML=n
+    ?L.slice(-10).reverse().map(x=>`<div class="lr"><span>${new Date(x.t).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</span><span>${MODEL[x.m]||x.m}${x.ti?" · "+esc(x.ti):""}</span><b>${x.w} WPM</b><span>${x.a}%</span></div>`).join("")
+    :'<div class="empty">ยังไม่มีประวัติ</div>';
+}
+$("#sclr").onclick=()=>{
+  const b=$("#sclr");
+  if(b.dataset.arm!=="1"){b.dataset.arm="1";b.lastChild.textContent="กดอีกครั้งเพื่อยืนยันลบสถิติทั้งหมด";setTimeout(()=>{b.dataset.arm="";b.lastChild.textContent="ล้างสถิติทั้งหมด"},3000);return}
+  hist=[];saveHist();b.dataset.arm="";b.lastChild.textContent="ล้างสถิติทั้งหมด";renderStats();
+};
+
 const LSK="typing_songs_v1";
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let songs=[],curId=null,curBlob=null,curName="",adb=null;
@@ -367,16 +498,16 @@ const delAudio=id=>idb().then(d=>new Promise(res=>{const t=d.transaction("a","re
 function showAudio(blob){$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(blob)+'" style="width:100%;margin-top:14px"></audio>'}
 function renderSongs(){
   $("#slist").innerHTML=songs.length
-    ?songs.map(s=>`<div class="si"><button class="n ${s.id===curId?"on":""}" data-id="${esc(s.id)}">${esc(s.title)}</button><button class="x" data-del="${esc(s.id)}" title="ลบ">✕</button></div>`).join("")
+    ?songs.map(s=>`<div class="si"><button class="n ${s.id===curId?"on":""}" data-id="${esc(s.id)}"><svg class="ic"><use href="#i-note"/></svg><span>${esc(s.title)}</span></button><button class="x" data-del="${esc(s.id)}" title="ลบ">✕</button></div>`).join("")
     :'<div class="hint" style="margin-bottom:8px">ยังไม่มีเพลงที่บันทึกไว้</div>';
 }
 function newSong(){
   curId=null;curBlob=null;curName="";
   $("#stitle").value="";$("#slink").value="";$("#slyr").value="";$("#smsg").textContent="";
   vid="";const a=$("#vwrap audio");if(a)a.pause();
-  $("#vwrap").innerHTML="";renderSongs();
+  $("#vwrap").innerHTML="";setDrop("");renderSongs();
 }
-$("#snew").onclick=()=>{songTyping=false;newSong();buildOpts();reset()};
+$("#snew").onclick=()=>{goSong();songTyping=false;newSong();buildOpts();reset()};
 $("#slist").onclick=async e=>{
   const d=e.target.closest("button[data-del]");
   if(d){
@@ -389,11 +520,11 @@ $("#slist").onclick=async e=>{
   const b=e.target.closest("button[data-id]");if(!b)return;
   const s=songs.find(x=>x.id===b.dataset.id);if(!s)return;
   songTyping=false;
-  const a0=$("#vwrap audio");if(a0)a0.pause();
+  goSong();const a0=$("#vwrap audio");if(a0)a0.pause();
   curId=s.id;curBlob=null;curName=s.fileName||"";
   $("#stitle").value=s.title;$("#slyr").value=s.lyrics;$("#slink").value=s.link||"";
   vid="";$("#vwrap").innerHTML="";$("#smsg").textContent="";
-  buildOpts();reset();renderSongs();
+  setDrop(s.hasAudio?(s.fileName||"ไฟล์เสียงที่บันทึกไว้"):"");buildOpts();reset();renderSongs();
   if(s.hasAudio){
     try{const blob=await getAudio(s.id);if(blob){curBlob=blob;if(!ytId($("#slink").value))showAudio(blob)}}
     catch(err){$("#smsg").textContent="เปิดไฟล์เสียงที่บันทึกไว้ไม่ได้ ลองเลือกไฟล์ใหม่"}
@@ -415,7 +546,7 @@ $("#ssave").onclick=async()=>{
   if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 };
 $("#sexp").onclick=()=>{
-  const data=JSON.stringify({v:1,songs:songs.map(({id,title,lyrics,link,fileName})=>({id,title,lyrics,link,fileName}))},null,1);
+  const data=JSON.stringify({v:2,songs:songs.map(({id,title,lyrics,link,fileName})=>({id,title,lyrics,link,fileName})),stats:hist},null,1);
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
   a.download="my-songs-backup.json";a.click();
@@ -425,6 +556,8 @@ $("#simpf").onchange=async e=>{
   const f=e.target.files[0];if(!f)return;
   try{
     const j=JSON.parse(await f.text());let n=0;
+    (j.stats||[]).forEach(x=>{if(x&&x.t&&x.w!=null&&!hist.some(y=>y.t===x.t&&y.m===x.m))hist.push(x)});
+    hist.sort((a,b)=>a.t-b.t);saveHist();
     (j.songs||[]).forEach(x=>{
       if(!x||!x.lyrics)return;
       const id=x.id||("s"+Date.now()+Math.random());
@@ -498,7 +631,27 @@ function restartMedia(){
   const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,true);
 }
 $("#slink").addEventListener("input",loadVid);
-$("#sfile").onchange=e=>{const f=e.target.files[0];if(!f)return;curBlob=f;curName=f.name;vid="";$("#slink").value="";$("#smsg").textContent="เลือกแล้ว: "+f.name;$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:14px"></audio>'};
+function setDrop(name){
+  $("#dropt").textContent=name?"เลือกแล้ว: "+name:"ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์";
+  $("#drop").classList.toggle("has",!!name);
+}
+function cnt(){$("#cnt").textContent=$("#slyr").value.length+"/10000"}
+$("#slyr").addEventListener("input",cnt);
+function goSong(){mode="song";document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.dataset.m==="song"))}
+function onFile(f){
+  if(!f)return;
+  curBlob=f;curName=f.name;vid="";$("#slink").value="";$("#smsg").textContent="";
+  setDrop(f.name);
+  $("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:16px"></audio>';
+}
+$("#sfile").onchange=e=>onFile(e.target.files[0]);
+["dragenter","dragover"].forEach(t=>$("#drop").addEventListener(t,e=>{e.preventDefault();$("#drop").classList.add("over")}));
+["dragleave","drop"].forEach(t=>$("#drop").addEventListener(t,e=>{e.preventDefault();$("#drop").classList.remove("over")}));
+$("#drop").addEventListener("drop",e=>{
+  const f=e.dataTransfer.files[0];if(!f)return;
+  if(/\.(mp3|mp4|m4a|wav)$/i.test(f.name)||/^audio\//.test(f.type)||f.type==="video/mp4")onFile(f);
+  else $("#smsg").textContent="รองรับเฉพาะไฟล์ mp3 / mp4";
+});
 $("#sgo").onclick=()=>{
   
   
@@ -529,6 +682,7 @@ $("#opts").onclick=e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.d)dur=+b.dataset.d;
   if(b.dataset.p)les=b.dataset.p;
+  if(b.dataset.sf)stF=b.dataset.sf;
   if(b.dataset.e){songTyping=false;const a=$("#vwrap audio");if(a)a.pause();const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
   buildOpts();reset();
 };
