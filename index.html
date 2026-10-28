@@ -112,6 +112,23 @@ textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:no
 .lr span:first-child{color:var(--mut);font-size:12px}
 .lr b{color:var(--ac)}
 .empty{text-align:center;color:var(--mut);padding:28px 12px;width:100%}
+.sr{position:relative;margin-top:16px}
+.sr .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mut);pointer-events:none}
+.sr .inp{padding-left:42px}
+.psec{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-size:19px;font-weight:700}
+.psec .ic{color:var(--ac)}
+.row{display:flex;gap:14px;overflow-x:auto;padding:16px;background:var(--card);border:1px solid var(--ln);border-radius:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.card{flex:0 0 190px;background:var(--bg);border:1px solid var(--ln);border-radius:18px;padding:10px}
+.grid .card{flex:none}
+.th{height:104px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff}
+.card h3{margin:10px 2px 0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt{margin:2px 2px 10px;font-size:13px;color:var(--mut)}
+.bt{display:flex;gap:6px}
+.pb,.sb{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:12px;font-size:13px;font-weight:600;padding:0 4px;cursor:pointer}
+.pb{background:var(--ac);color:#fff;border:0}
+.sb{background:var(--card);color:var(--tx);border:1px solid var(--ln)}
+.new{border:2px dashed var(--ln2);border-radius:18px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:216px;color:var(--ac);font-size:15px;font-weight:600;cursor:pointer;padding:10px;text-align:center}
 .songs{display:block}
 @media(max-width:859px){
   .app{display:block}
@@ -126,19 +143,82 @@ textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:no
   .tabs button{font-size:13px;gap:5px;padding:10px 2px}
   .tabs .ic{display:none}
 }
+
+:root{--glass:rgba(255,255,255,.5);--glass2:rgba(255,255,255,.72);--gb:rgba(255,255,255,.85);--shadow:0 10px 32px rgba(140,80,40,.14)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--glass:rgba(44,38,34,.5);--glass2:rgba(60,52,46,.7);--gb:rgba(255,255,255,.14);--shadow:0 10px 32px rgba(0,0,0,.4)}}
+body{background:#f6efe6;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(42vmax 42vmax at 6% 4%,rgba(255,154,90,.6),transparent 62%),radial-gradient(38vmax 38vmax at 96% 8%,rgba(183,162,238,.5),transparent 62%),radial-gradient(42vmax 42vmax at 92% 96%,rgba(95,192,182,.55),transparent 62%),radial-gradient(36vmax 36vmax at 4% 94%,rgba(255,194,122,.5),transparent 62%),linear-gradient(135deg,#fde4d0,#f7f1e6 50%,#d9ece6)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) body::before{background:radial-gradient(42vmax 42vmax at 6% 4%,rgba(240,138,82,.38),transparent 62%),radial-gradient(38vmax 38vmax at 96% 8%,rgba(130,110,200,.35),transparent 62%),radial-gradient(42vmax 42vmax at 92% 96%,rgba(60,150,140,.38),transparent 62%),linear-gradient(135deg,#1d1511,#171716 55%,#10201d)}}
+.side,.tabs,.row,.card,.chip,.inp,.stats div,.box,.line,.res,.drop,#lin,#gin,.si .n,.newbtn,.pf,.gcard{background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border-color:var(--gb)}
+.side,.row,.card,.stats div,.box,.res,.pf,.gcard{box-shadow:var(--shadow)}
+.side{border:1.5px solid var(--gb);border-radius:28px;margin:16px 0 16px 16px;height:calc(100vh - 32px);top:16px}
+.tabs,.row{border-radius:22px}.card{border-radius:20px}.chip{border-radius:99px}
+.tabs button.on,.go,.pb{background:linear-gradient(90deg,#e0621f,#c1402a);color:#fff;border:0}
+.go.sec{background:var(--glass);color:var(--tx);border:1.5px solid var(--gb)}
+.th{position:relative;aspect-ratio:16/9;height:auto;overflow:hidden;background-size:cover}
+.th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px}
+img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(40,25,15,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.modal[hidden]{display:none}
+.gcard{border:1.5px solid var(--gb);border-radius:20px}
+.gcard.sm{padding:12px;margin-top:10px;font-size:13px}
+.authc{width:min(440px,100%);padding:24px;border-radius:28px;max-height:92vh;overflow:auto;background:var(--glass2)}
+.authc h2{margin:14px 0 4px;font-size:22px}
+.fl2{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+.atabs{display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--glass);border:1px solid var(--gb)}
+.atabs button{flex:1;min-height:42px;border:0;border-radius:10px;background:none;color:var(--mut);font-size:15px;font-weight:600;cursor:pointer}
+.atabs button.on{background:linear-gradient(90deg,#e0621f,#c1402a);color:#fff}
+.fi .inp.pw{padding-right:48px}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--mut);padding:10px;cursor:pointer;display:flex}
+.eye .ic{position:static;transform:none}
+.err{color:var(--bad);min-height:20px;margin:8px 0 0}
+.ghost{display:block;width:100%;margin-top:10px;min-height:44px;border:0;background:none;color:var(--mut);font-size:14px;cursor:pointer;text-decoration:underline}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+.chk input{margin-top:3px}
+.bt2{display:flex;gap:6px;margin-top:8px}.bt2 .pb,.bt2 .sb{flex:1}
+.pf{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:18px;border:1.5px solid var(--gb)}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff9a5a,#d9571f);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.pn{min-width:0}.pn b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pn small{color:var(--mut);font-size:12.5px}
+.x2{margin-left:auto;border:0;background:none;color:var(--mut);cursor:pointer;padding:8px;display:flex}
+.rep{display:block;margin:6px 0 0 auto;border:0;background:none;color:var(--mut);font-size:12px;text-decoration:underline;cursor:pointer;padding:6px}
+.side #prof{margin-top:auto}.side .quote{margin-top:0}
+[hidden]{display:none!important}
+.opts:empty{display:none}
+.pb,.sb{white-space:nowrap;padding:0 6px}
+.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+@media(max-width:859px){.side{margin:12px;height:auto;top:0}}
+.lvr{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.lvl{font-weight:600;font-size:14px;margin-right:2px}
+.chip.lvc{min-width:40px;height:40px;padding:0;justify-content:center}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="i-kbd" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></symbol><symbol id="i-upload" viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-.5-8A6 6 0 0118 8.5 4.5 4.5 0 0117.5 18"/><path d="M12 18v-6M9 14l3-3 3 3"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></symbol><symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></symbol><symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-out" viewBox="0 0 24 24"><path d="M10 4H5v16h5M10 12h10M16 8l4 4-4 4"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol><symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="i-kbd" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol><symbol id="i-bars" viewBox="0 0 24 24"><path d="M6 20V10M12 20V4M18 20v-7"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></symbol><symbol id="i-upload" viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-.5-8A6 6 0 0118 8.5 4.5 4.5 0 0117.5 18"/><path d="M12 18v-6M9 14l3-3 3 3"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></symbol><symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></symbol><symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol></defs></svg>
+<div id="auth" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="atitle">
+  <div class="gcard authc">
+    <div class="atabs"><button id="atl" class="on">เข้าสู่ระบบ</button><button id="atr">สมัครสมาชิก</button></div>
+    <h2 id="atitle">เข้าสู่ระบบ</h2>
+    <label class="fl2" for="au">ชื่อผู้ใช้</label>
+    <div class="fi"><svg class="ic"><use href="#i-user"/></svg><input id="au" class="inp" autocomplete="username" autocapitalize="off" autocorrect="off" placeholder="เช่น mali"></div>
+    <label class="fl2" for="ap">รหัสผ่าน</label>
+    <div class="fi"><svg class="ic"><use href="#i-lock"/></svg><input id="ap" type="password" class="inp pw" autocomplete="current-password" placeholder="อย่างน้อย 8 ตัวอักษร"><button type="button" id="aeye" class="eye" aria-label="แสดงหรือซ่อนรหัสผ่าน"><svg class="ic"><use href="#i-eye"/></svg></button></div>
+    <div id="adn" hidden><label class="fl2" for="ad">ชื่อที่แสดง</label><div class="fi"><svg class="ic"><use href="#i-user"/></svg><input id="ad" class="inp" maxlength="30" placeholder="ชื่อที่เพื่อนจะเห็น"></div></div>
+    <div class="hint err" id="aerr" role="alert"></div>
+    <button class="go" id="asub">เข้าสู่ระบบ</button>
+    <button class="ghost" id="askip">ใช้งานโดยไม่ล็อกอิน (เก็บเพลงไว้ในเครื่องนี้)</button>
+    <p class="hint">ไม่ต้องใช้อีเมล อย่าใช้รหัสผ่านเดียวกับบัญชีอื่น</p>
+  </div>
+</div>
 <div class="app">
 <aside id="side" class="side">
   <div class="brand"><svg class="ic big"><use href="#i-note"/></svg><div><b>Paipimkaraoke</b><small>สร้างเพลงของคุณได้ง่ายๆ</small></div></div>
   <div class="songs">
     <div id="slist"></div>
     <button class="newbtn" id="snew"><svg class="ic"><use href="#i-plus"/></svg>เพลงใหม่</button>
-    <p class="hint">เพลงที่สร้างจะถูกเก็บไว้ในรายการ เพื่อให้คุณกลับมาแก้ไขได้ตลอดเวลา (เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ได้อัปโหลดขึ้นเว็บ)</p>
-    <div class="bk"><button class="chip" id="sexp"><svg class="ic"><use href="#i-folder"/></svg>สำรองข้อมูล</button><button class="chip" id="simp"><svg class="ic"><use href="#i-import"/></svg>นำเข้า</button><input type="file" id="simpf" accept=".json" hidden></div>
+    <p class="hint" id="shint"></p>
+    <div id="mig" class="gcard sm" hidden><div id="migt"></div><div class="bt2"><button class="pb" id="migyes">อัปโหลด</button><button class="sb" id="migno">ไม่ต้อง</button></div></div>
   </div>
+  <div id="prof"></div>
   <div class="quote"><svg class="ic"><use href="#i-note"/></svg><span>“ให้เสียงเพลง<br>เป็นพื้นที่ของคุณ”</span></div>
 </aside>
 <main class="main">
@@ -155,18 +235,29 @@ textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:no
   </nav>
   <div class="opts" id="opts"></div>
   <div id="vwrap" hidden></div>
+  <div id="pk" hidden>
+    <div class="sr"><label for="pq" style="position:absolute;left:-9999px">ค้นหาชื่อเพลง</label><svg class="ic"><use href="#i-search"/></svg><input id="pq" class="inp" placeholder="ค้นหาชื่อเพลง"></div>
+    <div class="opts" id="pchips"><button class="chip on" data-pf="all">ทั้งหมด</button><button class="chip" data-pf="mine">เพลงของฉัน</button><button class="chip" data-pf="recent">พิมพ์ล่าสุด</button><button class="chip" data-pf="pub">จากทุกคน</button></div>
+    <div id="pbody"></div>
+  </div>
   <div id="sp" hidden>
     <div class="fl"><svg class="ic"><use href="#i-doc"/></svg>ชื่อเพลง</div>
     <div class="fi"><svg class="ic"><use href="#i-note"/></svg><input id="stitle" class="inp" placeholder="ชื่อเพลง"></div>
-    <div class="fl"><svg class="ic"><use href="#i-play"/></svg>ลิงก์ YouTube (ถ้ามี)</div>
+    <div class="fl"><svg class="ic"><use href="#i-play"/></svg>ลิงก์ YouTube</div>
     <div class="fi"><svg class="ic"><use href="#i-link"/></svg><input id="slink" class="inp" placeholder="https://www.youtube.com/..." inputmode="url" autocapitalize="off" autocorrect="off"></div>
-    <div class="fl"><svg class="ic"><use href="#i-note"/></svg>ไฟล์เสียง (mp3 / mp4)</div>
-    <label class="drop" id="drop"><svg class="ic big"><use href="#i-upload"/></svg><span id="dropt">ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์</span><small>รองรับไฟล์ mp3 / mp4</small><input type="file" id="sfile" accept="audio/*,video/mp4,.mp3,.mp4" hidden></label>
+    <p class="hint" style="margin:6px 0 0">ใส่ลิงก์เพื่อให้มีเสียงเพลงและภาพปก</p>
+    
     <div class="fl"><svg class="ic"><use href="#i-doc"/></svg>เนื้อเพลง</div>
     <div class="ta"><textarea id="slyr" class="inp" maxlength="10000" placeholder="วางหรือพิมพ์เนื้อเพลงที่นี่ (1 บรรทัด = 1 ท่อน)"></textarea><span class="cnt" id="cnt">0/10000</span></div>
     <div class="hint" id="smsg" style="margin-top:8px"></div>
     <button class="go" id="sgo"><svg class="ic"><use href="#i-play"/></svg>เริ่มพิมพ์ตามเนื้อเพลง</button>
     <button class="go sec" id="ssave"><svg class="ic"><use href="#i-save"/></svg>บันทึกเพลงนี้ไว้ในรายการ</button>
+    <div id="shbox" class="gcard sm" hidden>
+      <div class="fl2" style="margin:0 0 6px">แชร์ให้ทุกคน</div>
+      <label class="chk"><input type="checkbox" id="shok"><span>ฉันยืนยันว่ามีสิทธิ์ใช้เนื้อเพลงและเนื้อหานี้ และยอมให้เผยแพร่ในเว็บนี้</span></label>
+      <div class="hint" id="shst" style="margin:6px 0"></div>
+      <div class="bt2"><button class="sb" id="shgo">ส่งขอแชร์</button><button class="sb" id="shoff" hidden>ยกเลิกการแชร์</button></div>
+    </div>
   </div>
 
   <div id="std">
@@ -217,7 +308,7 @@ textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:no
     <div class="chart" id="chart"></div>
     <div class="tt" style="margin-top:18px">ประวัติการพิมพ์ล่าสุด</div>
     <div class="slog" id="slog"></div>
-    <p class="hint">สถิติเก็บในเบราว์เซอร์ของเครื่องนี้ และรวมอยู่ในไฟล์สำรองข้อมูลด้วย</p>
+    <p class="hint" id="sthint"></p>
     <button class="go sec" id="sclr"><svg class="ic"><use href="#i-save"/></svg>ล้างสถิติทั้งหมด</button>
   </div>
 
@@ -227,7 +318,7 @@ textarea.ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;resize:no
 </div>
 <script>
 const $=s=>document.querySelector(s);
-const WORDS="ผม เธอ เรา ไป มา กิน ข้าว น้ำ บ้าน โรงเรียน เพื่อน ครู หนังสือ อ่าน เขียน เล่น เกม ดนตรี ร้องเพลง ทะเล ภูเขา ต้นไม้ ดอกไม้ ท้องฟ้า ดวงดาว แมว หมา ปลา นก รถ เรือ เครื่องบิน ตลาด ร้านค้า อาหาร อร่อย สนุก ทำงาน พักผ่อน วันนี้ พรุ่งนี้ เมื่อวาน เช้า เย็น กลางคืน ฝนตก แดดออก อากาศดี ขอบคุณ สวัสดี ยินดี ตั้งใจ พยายาม ฝึกฝน รวดเร็ว แม่นยำ".split(" ");
+const WORDS="หนังสือ เพื่อน อาหาร ทะเล ต้นไม้ ท้องฟ้า ดวงดาว อร่อย สนุก ทำงาน พักผ่อน วันนี้ พรุ่งนี้ เมื่อวาน กลางคืน ฝนตก แดดออก ขอบใจ สวัสดี ยินดี ตั้งใจ พยายาม ฝึกฝน แม่นยำ ความสุข ครอบครัว เดินทาง ท่องเที่ยว ร้านอาหาร ตลาด".split(" ");
 const WORDS_EN="the be to of and a in that have it for not on with he as you do at this but his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us practice keyboard speed accuracy finger typing school friend music learn simple quick smooth steady focus".split(" ");
 const MARK=/\p{M}/u,lab=c=>MARK.test(c)?"◌"+c:c;
 const KB_TH=[
@@ -263,22 +354,78 @@ const LES_EN=[
 let LESSONS=LES_TH,lang="th";
 
 /* ---------- โหมดจับเวลา / พิมพ์ ---------- */
+/* ---------- ระดับความยาก 1-8 (แท็บจับเวลา / พิมพ์) ---------- */
+const LV_TH={
+3:"กิน นอน ไป มา ดี ใจ น้ำ ตา มือ ปาก ขา แขน ผม ลม ฝน ดาว นก ปลา แมว หมา วัว ควาย บ้าน ยา งาน เกม รถ เรือ ทาง ปี วัน คืน เช้า ร้อน หนาว สุข รัก ชอบ ขอบ นั่ง เดิน วิ่ง อ่าน เขียน ร้อง เล่น".split(" "),
+5:"ความรับผิดชอบ เพื่อนบ้าน ห้องสมุด ห้องเรียน อาหารกลางวัน เมื่อไหร่ เสียงเพลง ท้องถนน ที่พักผ่อน รถไฟฟ้า เครื่องบิน ตั้งแต่เช้า ผ่านไปแล้ว สวยงามมาก เขียวขจี นักเรียนใหม่ ท้องฟ้าสดใส พักผ่อนเพียงพอ".split(" "),
+6:["วันนี้ท้องฟ้าสดใส ลมพัดเบาๆ","ผมชอบกินข้าวกับเพื่อนที่ตลาด","นักเรียนอ่านหนังสือกับเพื่อนทุกวัน","แมวนอนใต้ต้นไม้ข้างบ้าน","พรุ่งนี้เราจะไปเที่ยวทะเลด้วยกัน","ฝึกฝนทุกวัน แล้วจะทำได้คล่องขึ้น","ขอบใจที่ช่วยกันตั้งใจทำงาน","ฝนตกหนักตอนกลางคืน อย่าลืมพกร่ม","อาหารร้านนี้อร่อยมาก ราคาไม่แพง","เมื่อวานเราเดินทางไปหายายที่บ้านนอก","ทุกคนสนุกกับการร้องเพลงและเล่นดนตรี","ตื่นเช้าทุกวัน ร่างกายจะสดชื่น"],
+7:["โรงเรียน","ภูเขา","ผู้คน","ประเทศ","ธรรมชาติ","รวดเร็ว","เย็นสบาย","ก็ได้","ใหญ่โต","ซื้อของ","ญาติพี่น้อง","ปัญหา","ฤดูฝน","ฤดูหนาว","ฉลาด","ธุรกิจ","โอกาส","ภาษาไทย","โทรศัพท์","ฮัลโหล","๑๒๓","๔๕๖","๗๘๙","๑๐๐ บาท","วันที่ ๑๕ ตุลาคม"],
+8:["ราคา ๑๒๐ บาท ลดเหลือ ๙๙ บาท เฉพาะวันนี้เท่านั้น","โรงเรียนเปิดเวลา ๘.๓๐ น. และเลิกเวลา ๑๕.๓๐ น. ทุกวัน","ประเทศไทยมีฤดูร้อน ฤดูฝน และฤดูหนาว (ฤดูหนาวอากาศเย็นสบาย)","ผู้ที่ขยันฝึกฝนอยู่เสมอ ย่อมพิมพ์ได้รวดเร็วและแม่นยำขึ้นเรื่อยๆ","เมื่อไหร่จะถึงวันหยุดยาว ฉันอยากไปเที่ยวภูเขาและทะเล","อัตราส่วน ๓ ต่อ ๒ ลดลง ๕๐% ภายใน ๑๐ นาที","ขอบคุณมากนะคะ ยินดีที่ได้รู้จักทุกคน (ติดต่อได้ทุกวัน)","โทรศัพท์เครื่องใหม่ราคา ๑๕,๙๙๐ บาท รับประกัน ๑ ปี"]
+};
+const LV_EN={
+3:"cat dog sun map pen cup book tree fish bird rain moon star ship road milk rice hand foot door lamp song game time year kind help care play walk talk open easy fast slow cold warm blue gold".split(" "),
+5:"keyboard practice accuracy wonderful beautiful important different together tomorrow yesterday adventure knowledge education celebrate chocolate community discover fantastic imagine mountain neighbor orchestra paragraph question remember sandwich telescope umbrella vacation weather".split(" "),
+6:["the quick brown fox jumps over the lazy dog","we practice typing every day to get faster","a warm cup of tea makes the morning better","the train leaves the station at noon","please close the window before the rain starts","my friend plays the guitar after school","small steps every day lead to big progress","the library is quiet and full of old stories","she walked along the river and watched the boats","he carried the box up the stairs without stopping","good habits are built one day at a time","the market sells fresh fruit and warm bread"],
+7:["On Monday, we meet at 9 o'clock.","Mali's brother bought 3 apples and 2 pears.","It's raining, so please take an umbrella.","The class starts at 10:30; don't be late.","Remember: practice makes progress.","Tom and Ana visited Chiang Mai in July.","Our team scored 15 points in the final game.","Can you send me the file by Friday?"],
+8:["The new keyboard (model K-250) costs $45.99, which is 20% cheaper than last year's version.","He whispered, \"Please be careful,\" and then walked slowly across the old bridge.","Between 8:00 a.m. and 5:30 p.m., the library offers free Wi-Fi, printing, and study rooms.","Our goal: type 60 words per minute with 98% accuracy by the end of the semester!","Don't forget to email Ms. Lee at lee_2026@example.com before Friday (it's urgent).","Success isn't luck; it's the result of steady effort, patience & smart practice."]
+};
+const LVD_TH=["แป้นเหย้า ฟหกด่าสว","ตัวอักษรทุกแถว (คำสมมติ ไม่ต้องกด Shift)","คำสั้นๆ ง่ายๆ","คำที่ใช้บ่อย","คำยาวและวรรณยุกต์","ประโยคสั้นๆ","ตัวอักษรที่ต้องกด Shift และเลขไทย","ประโยคยาว เครื่องหมาย และตัวเลข"];
+const LVD_EN=["แป้นเหย้า a s d f j k l ;","ตัวอักษรทุกแถว (คำสมมติ)","คำสั้นๆ ง่ายๆ","คำที่ใช้บ่อย","คำยาว","ประโยคตัวพิมพ์เล็ก","ตัวพิมพ์ใหญ่ เครื่องหมาย และตัวเลข","ประโยคยาวผสมสัญลักษณ์"];
+const SENT_LV={th:[6,8],en:[6,7,8]};
+const TC=[..."ภถคตจขชพรนยบลฟหกดสวงผปอทมฝ"];
+const rnd=a=>a[Math.random()*a.length|0];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function thaiSyl(){
+  let t=rnd(TC);
+  const r=Math.random();
+  if(r<.4)t+=rnd([..."ิีึื"]);else if(r<.55)t+="ุ";
+  if(Math.random()<.35)t+=rnd([..."่้"]);
+  if(Math.random()<.25)t+=rnd([..."ะา"]);
+  if(Math.random()<.4)t+=rnd(TC);
+  return t;
+}
+function genText(n){
+  const en=lang==="en",out=[];
+  if(lv===1){
+    const pool=[...(en?"asdfjkl;":"ฟหกดาสว")];
+    for(let i=0;i<n;i++){let w="";for(let j=0,L=2+(Math.random()*3|0);j<L;j++){w+=rnd(pool);if(!en&&j>0&&Math.random()<.25)w+="่"}out.push(w)}
+    return out.join(" ");
+  }
+  if(lv===2){
+    for(let i=0;i<n;i++){
+      if(en){let w="";for(let j=0,L=3+(Math.random()*3|0);j<L;j++)w+=rnd([..."abcdefghijklmnopqrstuvwxyz"]);out.push(w)}
+      else out.push(thaiSyl()+(Math.random()<.4?thaiSyl():""));
+    }
+    return out.join(" ");
+  }
+  const list=lv===4?(en?WORDS_EN:WORDS):(en?LV_EN:LV_TH)[lv];
+  if(SENT_LV[en?"en":"th"].indexOf(lv)>=0){
+    const target=n*(en?5.5:4.5);let len=0,pool=[];
+    while(len<target){if(!pool.length)pool=shuffle(list);const t=pool.pop();out.push(t);len+=t.length+1}
+    return out.join(" ");
+  }
+  for(let i=0;i<n;i++)out.push(rnd(list));
+  return out.join(" ");
+}
+function lvRow(){
+  return `<div style="flex-basis:100%"><div class="lvr"><span class="lvl">ระดับ</span>${[1,2,3,4,5,6,7,8].map(k=>`<button class="chip lvc ${k===lv?"on":""}" data-lv="${k}" aria-label="ระดับ ${k}">${k}</button>`).join("")}</div><div class="hint" style="margin-top:6px">ระดับ ${lv}: ${(lang==="en"?LVD_EN:LVD_TH)[lv-1]}</div></div>`;
+}
+
 const box=$("#box"),res=$("#res");
 const inp=document.createElement("textarea");
 inp.className="ov";inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
 inp.addEventListener("paste",e=>e.preventDefault());
-let mode="song",dur=60,les="h",stF="all";
+let mode="song",dur=60,les="h",stF="all",spv="pick",pf="all",user=null,token="",lv=(()=>{try{return Math.min(8,Math.max(1,parseInt(localStorage.getItem("pk_lv"))||3))}catch(e){return 3}})();
 let songTyping=false,gtmr=null,vid="";
 let target="",started=0,done=false,errs=0,keys=0,prev=0,tmr=null;
 
-function genText(n){let a=[];const W=lang==="en"?WORDS_EN:WORDS;for(let i=0;i<n;i++)a.push(W[Math.random()*W.length|0]);return a.join(" ")}
 function buildOpts(){
   const o=$("#opts");
-  if(mode==="time")o.innerHTML=[30,60,120].map(s=>`<button class="chip ${s===dur?"on":""}" data-d="${s}">${s} วินาที</button>`).join("");
+  if(mode==="time")o.innerHTML=[30,60,120].map(s=>`<button class="chip ${s===dur?"on":""}" data-d="${s}">${s} วินาที</button>`).join("")+lvRow();
   else if(mode==="letter")o.innerHTML=LESSONS.map(([k,t])=>`<button class="chip ${k===les?"on":""}" data-p="${k}">${t}</button>`).join("");
   else if(mode==="stats")o.innerHTML=[["all","ทั้งหมด"],["song","ตามเพลง"],["time","จับเวลา"],["type","พิมพ์"],["letter","ฝึกแป้น"]].map(([k,t])=>`<button class="chip ${k===stF?"on":""}" data-sf="${k}">${t}</button>`).join("");
-  else if(mode==="song")o.innerHTML=songTyping?'<button class="chip" data-e="1">✏️ แก้ไขเนื้อเพลง</button>':'<span class="hint">เลือกไฟล์เสียงแล้วใส่เนื้อเพลง</span>';
-  else o.innerHTML='<span class="hint">พิมพ์ข้อความให้ครบ ไม่จำกัดเวลา</span>';
+  else if(mode==="song")o.innerHTML=songTyping?'<button class="chip" data-pick="1">เลือกเพลงอื่น</button><button class="chip" data-e="1">✏️ แก้ไขเนื้อเพลง</button>':(spv==="form"?'<button class="chip" data-pick="1">← กลับไปเลือกเพลง</button>':'');
+  else o.innerHTML='<span class="hint">พิมพ์ให้ครบ ไม่จำกัดเวลา</span>'+lvRow();
 }
 function reset(){
   clearInterval(tmr);tmr=null;clearInterval(ltmr);ltmr=null;clearInterval(gtmr);gtmr=null;
@@ -289,14 +436,15 @@ function reset(){
   let hd=HD[mode];
   if(S){
     if(songTyping)hd=["i-note","พิมพ์ตามเพลง",$("#stitle").value.trim()||"พิมพ์ทีละบรรทัดตามเนื้อเพลง"];
+    else if(spv==="pick")hd=["i-note","เลือกเพลงที่อยากพิมพ์","กดพิมพ์เลยเพื่อเริ่ม เพลงจะเล่นพร้อมเนื้อเพลงบรรทัดแรก"];
     else if(curId)hd=["i-pencil","แก้ไขเพลง","แก้ไขข้อมูล แล้วกดบันทึกหรือเริ่มพิมพ์ได้เลย"];
-    cnt();
+    cnt();renderShare();
   }
   $("#phi").innerHTML='<use href="#'+hd[0]+'"/>';$("#pht").textContent=hd[1];$("#phs").textContent=hd[2];
   const ST=mode==="stats";
   $("#std").hidden=mode==="letter"||S||ST;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);$("#st").hidden=!ST;
-  $("#vwrap").hidden=!S;$("#sp").hidden=!setup;$("#reset").hidden=setup||ST;
-  if(S){loadVid();if(songTyping)greset();return}
+  $("#vwrap").hidden=!S||(setup&&spv==="pick");$("#sp").hidden=!(setup&&spv==="form");$("#pk").hidden=!(setup&&spv==="pick");$("#reset").hidden=setup||ST;
+  if(S){loadVid();if(songTyping)greset();else if(spv==="pick")renderPicker();return}
   if(ST){renderStats();return}
   if(mode==="letter"){lreset();return}
   inp.value="";inp.disabled=false;prev=0;errs=keys=0;started=0;done=false;
@@ -444,18 +592,22 @@ const SK="typing_stats_v1";
 const MODEL={song:"ตามเพลง",time:"จับเวลา",type:"พิมพ์",letter:"ฝึกแป้น"};
 let hist=[];
 try{hist=JSON.parse(localStorage.getItem(SK)||"[]")}catch(e){hist=[]}
-function saveHist(){try{localStorage.setItem(SK,JSON.stringify(hist))}catch(e){}}
+function saveHist(){if(user)return;try{localStorage.setItem(SK,JSON.stringify(hist))}catch(e){}}
 function recordStat(el,c,acc,wpm){
   if(!(el>0)||!isFinite(wpm))return;
   let ti="";
   if(mode==="song")ti=$("#stitle").value.trim()||"เพลงไม่มีชื่อ";
   else if(mode==="letter")ti=(LESSONS.find(l=>l[0]===les)||[])[1]||"";
-  else if(mode==="time")ti=dur+" วินาที";
-  hist.push({t:Date.now(),m:mode,l:lang,w:wpm,a:acc,s:Math.round(el),c,ti});
+  else if(mode==="time")ti="ระดับ "+lv+" · "+dur+" วินาที";
+  else if(mode==="type")ti="ระดับ "+lv;
+  hist.push({t:Date.now(),m:mode,l:lang,w:wpm,a:acc,s:Math.round(el),c,ti,sid:mode==="song"?curId:null});
   if(hist.length>300)hist=hist.slice(-300);
   saveHist();
+  if(user)api("stats.add",{mode:mode,wpm:wpm,acc:acc,sec:Math.max(1,Math.round(el)),chars:c,title:ti,songId:mode==="song"?(curId||""):""});
 }
 function renderStats(){
+  $("#sclr").hidden=!!user;
+  $("#sthint").textContent=user?"สถิติถูกเก็บไว้ในบัญชีของคุณ ดูได้จากทุกเครื่อง":"ยังไม่ได้ล็อกอิน สถิติเก็บในเครื่องนี้เท่านั้น";
   const L=hist.filter(x=>stF==="all"||x.m===stF),n=L.length;
   const best=n?Math.max(...L.map(x=>x.w)):0;
   const avg=n?Math.round(L.reduce((a,x)=>a+x.w,0)/n):0;
@@ -480,94 +632,293 @@ $("#sclr").onclick=()=>{
 
 const LSK="typing_songs_v1";
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let songs=[],curId=null,curBlob=null,curName="",adb=null;
+let songs=[],curId=null;
 try{songs=JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){songs=[]}
-function saveSongs(){try{localStorage.setItem(LSK,JSON.stringify(songs))}catch(e){$("#smsg").textContent="บันทึกไม่ได้ (พื้นที่เต็มหรือเบราว์เซอร์ปิดการเก็บข้อมูล)"}}
-function idb(){
-  return new Promise((res,rej)=>{
-    if(adb)return res(adb);
-    let r;try{r=indexedDB.open("typing_audio",1)}catch(e){return rej(e)}
-    r.onupgradeneeded=()=>r.result.createObjectStore("a");
-    r.onsuccess=()=>{adb=r.result;res(adb)};
-    r.onerror=()=>rej(r.error);
-  });
+function saveSongs(){
+  try{
+    if(user){const m={};songs.forEach(s=>{m[s.id]={lastAt:s.lastAt}});localStorage.setItem(MK,JSON.stringify(m))}
+    else localStorage.setItem(LSK,JSON.stringify(songs));
+  }catch(e){$("#smsg").textContent="บันทึกไม่ได้ (พื้นที่เต็มหรือเบราว์เซอร์ปิดการเก็บข้อมูล)"}
 }
-const putAudio=(id,blob)=>idb().then(d=>new Promise((res,rej)=>{const t=d.transaction("a","readwrite");t.objectStore("a").put(blob,id);t.oncomplete=res;t.onerror=()=>rej(t.error)}));
-const getAudio=id=>idb().then(d=>new Promise((res,rej)=>{const q=d.transaction("a").objectStore("a").get(id);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
-const delAudio=id=>idb().then(d=>new Promise(res=>{const t=d.transaction("a","readwrite");t.objectStore("a").delete(id);t.oncomplete=res;t.onerror=res}));
-function showAudio(blob){$("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(blob)+'" style="width:100%;margin-top:14px"></audio>'}
 function renderSongs(){
   $("#slist").innerHTML=songs.length
-    ?songs.map(s=>`<div class="si"><button class="n ${s.id===curId?"on":""}" data-id="${esc(s.id)}"><svg class="ic"><use href="#i-note"/></svg><span>${esc(s.title)}</span></button><button class="x" data-del="${esc(s.id)}" title="ลบ">✕</button></div>`).join("")
+    ?songs.map(s=>`<div class="si"><button class="n ${s.id===curId?"on":""}" data-id="${esc(s.id)}">${mini(s)}<span>${esc(s.title)}</span></button><button class="x" data-del="${esc(s.id)}" title="ลบ">✕</button></div>`).join("")
     :'<div class="hint" style="margin-bottom:8px">ยังไม่มีเพลงที่บันทึกไว้</div>';
 }
 function newSong(){
-  curId=null;curBlob=null;curName="";
+  curId=null;
   $("#stitle").value="";$("#slink").value="";$("#slyr").value="";$("#smsg").textContent="";
-  vid="";const a=$("#vwrap audio");if(a)a.pause();
-  $("#vwrap").innerHTML="";setDrop("");renderSongs();
+  vid="";
+  $("#vwrap").innerHTML="";renderSongs();
 }
-$("#snew").onclick=()=>{goSong();songTyping=false;newSong();buildOpts();reset()};
+$("#snew").onclick=()=>{spv="form";goSong();songTyping=false;newSong();buildOpts();reset()};
 $("#slist").onclick=async e=>{
   const d=e.target.closest("button[data-del]");
   if(d){
     if(d.dataset.arm!=="1"){d.dataset.arm="1";d.textContent="ลบ?";setTimeout(()=>{d.dataset.arm="";d.textContent="✕"},3000);return}
     const id=d.dataset.del;
-    songs=songs.filter(x=>x.id!==id);saveSongs();delAudio(id).catch(()=>{});
+    if(user)api("songs.delete",{id});
+    songs=songs.filter(x=>x.id!==id);saveSongs();
     if(curId===id)newSong();
+    if(!$("#pk").hidden)renderPicker();
     renderSongs();return;
   }
   const b=e.target.closest("button[data-id]");if(!b)return;
   const s=songs.find(x=>x.id===b.dataset.id);if(!s)return;
   songTyping=false;
-  goSong();const a0=$("#vwrap audio");if(a0)a0.pause();
-  curId=s.id;curBlob=null;curName=s.fileName||"";
+  spv="form";goSong();
+  curId=s.id;
   $("#stitle").value=s.title;$("#slyr").value=s.lyrics;$("#slink").value=s.link||"";
   vid="";$("#vwrap").innerHTML="";$("#smsg").textContent="";
-  setDrop(s.hasAudio?(s.fileName||"ไฟล์เสียงที่บันทึกไว้"):"");buildOpts();reset();renderSongs();
-  if(s.hasAudio){
-    try{const blob=await getAudio(s.id);if(blob){curBlob=blob;if(!ytId($("#slink").value))showAudio(blob)}}
-    catch(err){$("#smsg").textContent="เปิดไฟล์เสียงที่บันทึกไว้ไม่ได้ ลองเลือกไฟล์ใหม่"}
-  }
+  buildOpts();reset();renderSongs();
 };
 $("#ssave").onclick=async()=>{
   const title=$("#stitle").value.trim()||"เพลงไม่มีชื่อ";
   const lyr=$("#slyr").value.trim();
+  const link=$("#slink").value.trim();
   if(!lyr){$("#smsg").textContent="ใส่เนื้อเพลงก่อนบันทึกนะ";return}
   let s=songs.find(x=>x.id===curId);
-  if(!s){s={id:"s"+Date.now()};songs.push(s);curId=s.id}
-  s.title=title;s.lyrics=lyr;s.link=$("#slink").value.trim();
-  let msg="บันทึกแล้ว: "+title;
-  if(curBlob){
-    try{await putAudio(s.id,curBlob);s.hasAudio=true;s.fileName=curName}
-    catch(e){msg="บันทึกเนื้อเพลงแล้ว แต่เก็บไฟล์เสียงไม่ได้ (พื้นที่เต็มหรือเบราว์เซอร์ไม่อนุญาต)"}
+  if(user){
+    const b=$("#ssave");b.disabled=true;$("#smsg").textContent="กำลังบันทึก...";
+    const res=await api("songs.save",{id:s?s.id:undefined,title,link,lyrics:lyr});
+    b.disabled=false;
+    if(!res.ok){$("#smsg").textContent=errMsg(res.error);return}
+    if(!s){s={};songs.push(s)}
+    Object.assign(s,res.song);curId=s.id;
+  }else{
+    if(!s){s={id:"s"+Date.now()};songs.push(s);curId=s.id}
+    s.title=title;s.lyrics=lyr;s.link=link;
   }
-  saveSongs();renderSongs();$("#smsg").textContent=msg;
+  let msg="บันทึกแล้ว: "+title;
+  saveSongs();renderSongs();$("#smsg").textContent=msg;renderShare();
   if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 };
-$("#sexp").onclick=()=>{
-  const data=JSON.stringify({v:2,songs:songs.map(({id,title,lyrics,link,fileName})=>({id,title,lyrics,link,fileName})),stats:hist},null,1);
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
-  a.download="my-songs-backup.json";a.click();
+/* ---------- หน้าเลือกเพลง ---------- */
+const PAL=["#d9622b","#2f6f73","#6a4c93","#3b4a6b","#6f8230","#a8456a"];
+function ago(t){
+  const m=Math.floor((Date.now()-t)/60000);
+  if(m<1)return "เมื่อสักครู่";
+  if(m<60)return m+" นาทีที่แล้ว";
+  const h=Math.floor(m/60);
+  return h<24?h+" ชั่วโมงที่แล้ว":Math.floor(h/24)+" วันที่แล้ว";
+}
+function bestOf(s){
+  const a=hist.filter(x=>x.m==="song"&&(x.sid===s.id||(!x.sid&&x.ti===s.title))).map(x=>x.w);
+  return a.length?Math.max(...a):0;
+}
+function pcard(s,sub,kind){
+  const pub=kind==="pub";
+  const b2=pub?`<button class="sb" data-psave="${esc(s.id)}"><svg class="ic"><use href="#i-star"/></svg>บันทึก</button>`:`<button class="sb" data-edit="${esc(s.id)}"><svg class="ic"><use href="#i-pencil"/></svg>แก้ไข</button>`;
+  return `<article class="card">${thumbHTML(s)}<h3>${esc(s.title)}</h3><p class="mt">${sub}</p><div class="bt"><button class="pb" ${pub?"data-pplay":"data-play"}="${esc(s.id)}"><svg class="ic"><use href="#i-play"/></svg>พิมพ์เลย</button>${b2}</div>${pub?`<button class="rep" data-prep="${esc(s.id)}">แจ้งลบ</button>`:""}</article>`;
+}
+function renderPicker(){
+  const q=($("#pq").value||"").trim().toLowerCase();
+  document.querySelectorAll("#pchips .chip").forEach(c=>c.classList.toggle("on",c.dataset.pf===pf));
+  const match=s=>!q||s.title.toLowerCase().includes(q);
+  const mine=songs.filter(match);
+  const recent=songs.filter(s=>s.lastAt&&match(s)).sort((a,b)=>b.lastAt-a.lastAt).slice(0,8);
+  let h="";
+  if((pf==="all"||pf==="recent")&&recent.length)h+=`<div class="psec"><svg class="ic"><use href="#i-clock"/></svg>เพลงที่พิมพ์ล่าสุด</div><div class="row">${recent.map(s=>pcard(s,ago(s.lastAt))).join("")}</div>`;
+  if(pf==="all"||pf==="mine")h+=`<div class="psec"><svg class="ic"><use href="#i-note"/></svg>เพลงของฉัน</div><div class="grid"><button class="new" data-new="1"><svg class="ic" style="width:30px;height:30px"><use href="#i-plus"/></svg>สร้างเพลงใหม่<span class="hint">ใส่ลิงก์ YouTube และเนื้อเพลง</span></button>${mine.map(s=>{const b=bestOf(s);return pcard(s,(b?b+" WPM · ":"ยังไม่เคยพิมพ์ · ")+(s.link?"ลิงก์ YouTube":"ยังไม่มีลิงก์"))}).join("")}</div>`;
+  if(pf==="recent"&&!recent.length)h+='<p class="hint" style="margin-top:20px">ยังไม่มีเพลงที่พิมพ์ล่าสุด เลือกเพลงแล้วกดพิมพ์เลยได้เลย</p>';
+  if(pf==="all"||pf==="pub")h+=pubSection(q);
+  $("#pbody").innerHTML=h;
+}
+async function openSong(id,play){
+  const s=songs.find(x=>x.id===id);if(!s)return;
+  goSong();songTyping=false;spv="form";
+  
+  curId=s.id;
+  $("#stitle").value=s.title;$("#slyr").value=s.lyrics;$("#slink").value=s.link||"";
+  vid="";$("#vwrap").innerHTML="";$("#smsg").textContent="";
+  
+  buildOpts();reset();renderSongs();
+  if(play)$("#sgo").click();
+}
+$("#pbody").onclick=e=>{
+  const p=e.target.closest("[data-play]"),d=e.target.closest("[data-edit]"),n=e.target.closest("[data-new]");
+  const pp=e.target.closest("[data-pplay]"),ps=e.target.closest("[data-psave]"),pr=e.target.closest("[data-prep]");
+  if(p)openSong(p.dataset.play,true);
+  else if(d)openSong(d.dataset.edit,false);
+  else if(n)$("#snew").click();
+  else if(pp)openPublic(pp.dataset.pplay);
+  else if(ps)savePublic(ps.dataset.psave,ps);
+  else if(pr)reportPublic(pr.dataset.prep);
 };
-$("#simp").onclick=()=>$("#simpf").click();
-$("#simpf").onchange=async e=>{
-  const f=e.target.files[0];if(!f)return;
+$("#pchips").onclick=e=>{const b=e.target.closest("button");if(!b)return;pf=b.dataset.pf;renderPicker()};
+$("#pq").addEventListener("input",renderPicker);
+/* ---------- บัญชีผู้ใช้ + เชื่อม Google Sheet ---------- */
+const API_URL="https://script.google.com/macros/s/AKfycbz5c_bd9j6byLvmUJyNU1ifPblXODC-Yf1rkhc5i1yX-Wq_0MP9ao4frW8v2wq1_JhZ/exec";
+const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้"};
+const errMsg=c=>ERR[c]||("เกิดข้อผิดพลาด ("+c+")");
+async function api(action,payload){
   try{
-    const j=JSON.parse(await f.text());let n=0;
-    (j.stats||[]).forEach(x=>{if(x&&x.t&&x.w!=null&&!hist.some(y=>y.t===x.t&&y.m===x.m))hist.push(x)});
-    hist.sort((a,b)=>a.t-b.t);saveHist();
-    (j.songs||[]).forEach(x=>{
-      if(!x||!x.lyrics)return;
-      const id=x.id||("s"+Date.now()+Math.random());
-      if(songs.some(y=>y.id===id))return;
-      songs.push({id,title:x.title||"เพลง",lyrics:x.lyrics,link:x.link||"",fileName:x.fileName||"",hasAudio:false});n++;
-    });
-    saveSongs();renderSongs();
-    $("#smsg").textContent="นำเข้า "+n+" เพลงแล้ว (ไฟล์เสียงไม่อยู่ในไฟล์สำรอง ต้องเลือกไฟล์ใหม่ในแต่ละเพลง)";
-  }catch(err){$("#smsg").textContent="ไฟล์สำรองไม่ถูกต้อง"}
-  e.target.value="";
+    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action,token},payload||{}))});
+    return await r.json();
+  }catch(e){return {ok:false,error:"network"}}
+}
+const UK="pk_user_v1",TK="pk_token_v1",MK="pk_meta_v1",GK="pk_guest_v1";
+const readMeta=()=>{try{return JSON.parse(localStorage.getItem(MK)||"{}")}catch(e){return {}}};
+const writeMeta=m=>{try{localStorage.setItem(MK,JSON.stringify(m))}catch(e){}};
+function setAuth(u,t){
+  user=u;token=t||"";
+  try{if(u){localStorage.setItem(UK,JSON.stringify(u));localStorage.setItem(TK,token)}else{localStorage.removeItem(UK);localStorage.removeItem(TK)}}catch(e){}
+}
+function renderProf(){
+  const el=$("#prof");
+  $("#shint").textContent=user?"เพลงของคุณเก็บไว้ในบัญชี เปิดจากเครื่องไหนก็ได้":"ยังไม่ได้ล็อกอิน เพลงเก็บไว้ในเครื่องนี้เท่านั้น";
+  el.innerHTML=user
+    ?`<div class="pf"><div class="av">${esc([...user.displayName][0]||"?")}</div><div class="pn"><b>${esc(user.displayName)}</b><small>@${esc(user.username)}</small></div><button class="x2" id="plogout" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-out"/></svg></button></div>`
+    :`<button class="newbtn" id="plogin"><svg class="ic"><use href="#i-user"/></svg>เข้าสู่ระบบ / สมัครสมาชิก</button>`;
+}
+$("#prof").onclick=e=>{if(e.target.closest("#plogout"))logout();else if(e.target.closest("#plogin"))openAuth("login")};
+function reloadGuest(){
+  try{songs=JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){songs=[]}
+  try{hist=JSON.parse(localStorage.getItem(SK)||"[]")}catch(e){hist=[]}
+  pubCache=null;renderSongs();
+}
+async function afterLogin(){
+  renderProf();
+  const [a,b]=await Promise.all([api("songs.list"),api("stats.list")]);
+  const meta=readMeta();
+  if(a.ok)songs=a.songs.map(x=>Object.assign({},x,meta[x.id]||{}));
+  if(b.ok)hist=b.stats.map(x=>({t:Date.parse(x.at),m:x.mode,l:"th",w:x.wpm,a:x.acc,s:x.sec,c:x.chars,ti:x.title,sid:x.songId||null}));
+  pubCache=null;renderSongs();reset();checkMigrate();
+}
+async function logout(){
+  if(token)await api("logout");
+  setAuth(null);reloadGuest();newSong();renderProf();spv="pick";reset();
+}
+async function initAuth(){
+  renderProf();
+  let u=null,t="";
+  try{u=JSON.parse(localStorage.getItem(UK)||"null");t=localStorage.getItem(TK)||""}catch(e){}
+  if(u&&t){
+    user=u;token=t;songs=[];hist=[];renderProf();renderSongs();
+    const me=await api("me");
+    if(me.ok){user=me.user;await afterLogin()}
+    else if(me.error==="unauthorized"){setAuth(null);reloadGuest();renderProf();reset();openAuth("login",ERR.unauthorized)}
+    else{$("#smsg").textContent=errMsg(me.error)}
+  }else if(!localStorage.getItem(GK))openAuth("login");
+}
+let amode="login";
+function setAuthMode(){
+  const reg=amode==="reg";
+  $("#atl").classList.toggle("on",!reg);$("#atr").classList.toggle("on",reg);
+  $("#atitle").textContent=reg?"สมัครสมาชิก":"เข้าสู่ระบบ";$("#adn").hidden=!reg;
+  $("#asub").textContent=reg?"สร้างบัญชี":"เข้าสู่ระบบ";
+  $("#ap").autocomplete=reg?"new-password":"current-password";
+}
+function openAuth(m,msg){amode=m||"login";$("#auth").hidden=false;setAuthMode();$("#aerr").textContent=msg||"";setTimeout(()=>$("#au").focus(),50)}
+$("#atl").onclick=()=>{amode="login";setAuthMode()};
+$("#atr").onclick=()=>{amode="reg";setAuthMode()};
+$("#aeye").onclick=()=>{const p=$("#ap");p.type=p.type==="password"?"text":"password"};
+$("#askip").onclick=()=>{try{localStorage.setItem(GK,"1")}catch(e){}$("#auth").hidden=true};
+$("#auth").addEventListener("keydown",e=>{
+  if(e.key==="Escape")$("#askip").click();
+  else if(e.key==="Enter"&&e.target.tagName==="INPUT")$("#asub").click();
+});
+$("#asub").onclick=async()=>{
+  const u=$("#au").value.trim(),p=$("#ap").value,reg=amode==="reg",b=$("#asub");
+  if(!u||!p){$("#aerr").textContent="กรอกชื่อผู้ใช้และรหัสผ่านก่อน";return}
+  if(reg&&!$("#ad").value.trim()){$("#aerr").textContent=ERR.bad_displayname;return}
+  b.disabled=true;$("#aerr").textContent="กำลังดำเนินการ...";
+  const res=await api(reg?"register":"login",{username:u,password:p,displayName:reg?$("#ad").value.trim():undefined});
+  b.disabled=false;
+  if(!res.ok){$("#aerr").textContent=errMsg(res.error);return}
+  setAuth(res.user,res.token);
+  $("#auth").hidden=true;$("#ap").value="";$("#aerr").textContent="";
+  try{localStorage.setItem(GK,"1")}catch(e){}
+  await afterLogin();
+};
+function guestSongs(){try{return JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){return []}}
+function checkMigrate(){
+  const g=guestSongs();
+  $("#mig").hidden=!(user&&g.length);
+  if(g.length)$("#migt").textContent="มีเพลง "+g.length+" เพลงที่เก็บไว้ในเครื่องนี้ อัปโหลดเข้าบัญชีของคุณไหม?";
+}
+$("#migyes").onclick=async()=>{
+  const g=guestSongs();$("#migt").textContent="กำลังอัปโหลด...";
+  for(const s of g){
+    const res=await api("songs.save",{title:s.title,link:s.link||"",lyrics:s.lyrics});
+    if(!res.ok)continue;
+    const meta=readMeta();meta[res.song.id]={lastAt:s.lastAt};writeMeta(meta);
+  }
+  try{localStorage.removeItem(LSK)}catch(e){}
+  await afterLogin();
+};
+$("#migno").onclick=()=>{$("#mig").hidden=true};
+
+/* ---------- ภาพปกจาก YouTube + เพลงจากทุกคน + แชร์ ---------- */
+function thumbHTML(s){
+  const col=PAL[[...s.title].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL.length];
+  const id=ytId(s.link||"");
+  const img=id?`<img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`:"";
+  return `<div class="th" style="background:${col}"><svg class="ic" style="width:34px;height:34px"><use href="#i-note"/></svg>${img}</div>`;
+}
+function mini(s){
+  const id=ytId(s.link||"");
+  return id?`<img class="mini" src="https://i.ytimg.com/vi/${id}/default.jpg" alt="" loading="lazy" onerror="this.style.display='none'">`:'<svg class="ic"><use href="#i-note"/></svg>';
+}
+let pubCache=null,pubLoading=false,pubErr="",pubAt=0;
+function pubSection(q){
+  const head='<div class="psec"><svg class="ic"><use href="#i-note"/></svg>เพลงจากทุกคน</div>';
+  if((pubCache===null||Date.now()-pubAt>60000)&&!pubLoading){
+    pubLoading=true;
+    api("songs.public").then(r=>{pubLoading=false;pubAt=Date.now();pubErr=r.ok?"":errMsg(r.error);pubCache=r.ok?r.songs:(pubCache||[]);if(!$("#pk").hidden)renderPicker()});
+  }
+  if(pubCache===null)return head+'<p class="hint">กำลังโหลด...</p>';
+  if(pubErr)return head+'<p class="hint">'+esc(pubErr)+'</p>';
+  const L=pubCache.filter(s=>!q||s.title.toLowerCase().includes(q));
+  if(!L.length)return head+'<p class="hint">ยังไม่มีเพลงที่แชร์ในตอนนี้</p>';
+  return head+`<div class="row">${L.map(s=>pcard(s,"โดย "+esc(s.ownerName),"pub")).join("")}</div>`;
+}
+function openPublic(id){
+  const s=(pubCache||[]).find(x=>x.id===id);if(!s)return;
+  goSong();songTyping=false;spv="form";
+  
+  curId=null;
+  $("#stitle").value=s.title;$("#slyr").value=s.lyrics;$("#slink").value=s.link||"";
+  vid="";$("#vwrap").innerHTML="";$("#smsg").textContent="";
+  buildOpts();reset();$("#sgo").click();
+}
+async function savePublic(id,btn){
+  const s=(pubCache||[]).find(x=>x.id===id);if(!s)return;
+  if(user){
+    const res=await api("songs.save",{title:s.title,link:s.link||"",lyrics:s.lyrics});
+    if(!res.ok){btn.textContent=errMsg(res.error);return}
+    songs.push(Object.assign({},res.song));
+  }else{
+    songs.push({id:"s"+Date.now(),title:s.title,lyrics:s.lyrics,link:s.link||""});
+  }
+  saveSongs();renderSongs();btn.textContent="บันทึกแล้ว";btn.disabled=true;
+}
+async function reportPublic(id){
+  const reason=prompt("เหตุผลที่แจ้งลบ (เช่น ละเมิดลิขสิทธิ์)");
+  if(reason===null)return;
+  const r=await api("songs.report",{id,reason});
+  alert(r.ok?"ส่งเรื่องแล้ว ขอบคุณค่ะ":errMsg(r.error));
+}
+function renderShare(){
+  const s=songs.find(x=>x.id===curId),box=$("#shbox");
+  box.hidden=!(user&&s);
+  if(!user||!s)return;
+  const st=s.status||"private";
+  $("#shst").textContent=st==="approved"?"เผยแพร่แล้วในหมวดเพลงจากทุกคน":st==="pending"?"ส่งคำขอแล้ว รอตรวจก่อนเผยแพร่":"ยังไม่ได้แชร์ (เห็นเฉพาะคุณ)";
+  $("#shgo").hidden=st!=="private";$("#shoff").hidden=st==="private";$("#shok").parentElement.hidden=st!=="private";
+}
+$("#shgo").onclick=async()=>{
+  const s=songs.find(x=>x.id===curId);if(!s)return;
+  if(!$("#shok").checked){$("#shst").textContent=ERR.rights_required;return}
+  const res=await api("songs.share",{id:s.id,rights:true});
+  if(!res.ok){$("#shst").textContent=errMsg(res.error);return}
+  s.status=res.status;pubCache=null;renderShare();
+};
+$("#shoff").onclick=async()=>{
+  const s=songs.find(x=>x.id===curId);if(!s)return;
+  const res=await api("songs.share",{id:s.id,share:false});
+  if(!res.ok){$("#shst").textContent=errMsg(res.error);return}
+  s.status="private";pubCache=null;renderShare();
 };
 renderSongs();
 const gin=$("#gin");
@@ -627,31 +978,12 @@ function loadVid(){
   return true;
 }
 function restartMedia(){
-  const a=$("#vwrap audio");if(a){a.currentTime=0;a.play().catch(()=>{})}
   const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,true);
 }
 $("#slink").addEventListener("input",loadVid);
-function setDrop(name){
-  $("#dropt").textContent=name?"เลือกแล้ว: "+name:"ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์";
-  $("#drop").classList.toggle("has",!!name);
-}
 function cnt(){$("#cnt").textContent=$("#slyr").value.length+"/10000"}
 $("#slyr").addEventListener("input",cnt);
 function goSong(){mode="song";document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.dataset.m==="song"))}
-function onFile(f){
-  if(!f)return;
-  curBlob=f;curName=f.name;vid="";$("#slink").value="";$("#smsg").textContent="";
-  setDrop(f.name);
-  $("#vwrap").innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:16px"></audio>';
-}
-$("#sfile").onchange=e=>onFile(e.target.files[0]);
-["dragenter","dragover"].forEach(t=>$("#drop").addEventListener(t,e=>{e.preventDefault();$("#drop").classList.add("over")}));
-["dragleave","drop"].forEach(t=>$("#drop").addEventListener(t,e=>{e.preventDefault();$("#drop").classList.remove("over")}));
-$("#drop").addEventListener("drop",e=>{
-  const f=e.dataTransfer.files[0];if(!f)return;
-  if(/\.(mp3|mp4|m4a|wav)$/i.test(f.name)||/^audio\//.test(f.type)||f.type==="video/mp4")onFile(f);
-  else $("#smsg").textContent="รองรับเฉพาะไฟล์ mp3 / mp4";
-});
 $("#sgo").onclick=()=>{
   
   
@@ -661,7 +993,8 @@ $("#sgo").onclick=()=>{
   if(!lines.length){$("#smsg").textContent="ใส่เนื้อเพลงก่อนนะ";return}
   glines=lines;
   
-  $("#smsg").textContent="";songTyping=true;buildOpts();reset();gin.focus();
+  $("#smsg").textContent="";{const so=songs.find(x=>x.id===curId);if(so){so.lastAt=Date.now();saveSongs()}}
+  songTyping=true;buildOpts();reset();gin.focus();
   restartMedia();
 };
 
@@ -673,8 +1006,8 @@ $("#reset").onclick=()=>{
 };
 $("#tabs").onclick=e=>{
   const b=e.target.closest("button");if(!b)return;
-  mode=b.dataset.m;
-  if(mode!=="song"){const a=$("#vwrap audio");if(a)a.pause();const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
+  mode=b.dataset.m;if(mode==="song"&&!songTyping)spv="pick";
+  if(mode!=="song"){const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
   document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
   buildOpts();reset();
 };
@@ -683,7 +1016,9 @@ $("#opts").onclick=e=>{
   if(b.dataset.d)dur=+b.dataset.d;
   if(b.dataset.p)les=b.dataset.p;
   if(b.dataset.sf)stF=b.dataset.sf;
-  if(b.dataset.e){songTyping=false;const a=$("#vwrap audio");if(a)a.pause();const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
+  if(b.dataset.lv){lv=+b.dataset.lv;try{localStorage.setItem("pk_lv",String(lv))}catch(e){}}
+  if(b.dataset.pick){songTyping=false;spv="pick";const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
+  if(b.dataset.e){songTyping=false;spv="form";const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
   buildOpts();reset();
 };
 $("#langs").onclick=e=>{
@@ -695,7 +1030,7 @@ $("#langs").onclick=e=>{
   $("#hint1").textContent=lang==="en"?"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาอังกฤษ)":"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)";
   buildKb();buildOpts();reset();
 };
-buildKb();buildOpts();reset();
+buildKb();buildOpts();reset();initAuth();
 </script>
 </body>
 </html>
