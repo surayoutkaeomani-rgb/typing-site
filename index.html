@@ -190,6 +190,16 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
 .lvr{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .lvl{font-weight:600;font-size:14px;margin-right:2px}
 .chip.lvc{min-width:40px;height:40px;padding:0;justify-content:center}
+.pfb{display:flex;align-items:center;gap:10px;border:0;background:none;padding:0;min-width:0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.adm{color:var(--ac);font-weight:700;font-size:12.5px}
+.badge2{font-size:12px;border:1px solid var(--gb);padding:2px 8px;border-radius:99px;color:var(--mut)}
+.acard{padding:14px;margin-bottom:10px;border-radius:18px}
+.acard .ah{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.acard pre{white-space:pre-wrap;font:inherit;margin:8px 0;max-height:220px;overflow:auto}
+.urow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;margin-bottom:8px;border-radius:16px}
+.urow .un{flex:1;min-width:150px}
+.urow .sb{flex:none;min-height:40px;padding:0 12px}
+.tmp{font-family:monospace;font-size:17px;letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -207,6 +217,21 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
     <button class="go" id="asub">เข้าสู่ระบบ</button>
     <button class="ghost" id="askip">ใช้งานโดยไม่ล็อกอิน (เก็บเพลงไว้ในเครื่องนี้)</button>
     <p class="hint">ไม่ต้องใช้อีเมล อย่าใช้รหัสผ่านเดียวกับบัญชีอื่น</p>
+  </div>
+</div>
+<div id="acct" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="actitle">
+  <div class="gcard authc">
+    <h2 id="actitle">บัญชีของฉัน</h2>
+    <label class="fl2" for="acdn">ชื่อที่แสดง</label>
+    <div class="fi"><svg class="ic"><use href="#i-user"/></svg><input id="acdn" class="inp" maxlength="30"></div>
+    <button class="go sec" id="acsave">บันทึกชื่อ</button>
+    <label class="fl2" for="acold">รหัสผ่านเดิม</label>
+    <div class="fi"><svg class="ic"><use href="#i-lock"/></svg><input id="acold" type="password" class="inp" autocomplete="current-password"></div>
+    <label class="fl2" for="acnew">รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)</label>
+    <div class="fi"><svg class="ic"><use href="#i-lock"/></svg><input id="acnew" type="password" class="inp" autocomplete="new-password"></div>
+    <div class="hint err" id="acerr" role="alert"></div>
+    <button class="go" id="acpw">เปลี่ยนรหัสผ่าน</button>
+    <button class="ghost" id="acclose">ปิด</button>
   </div>
 </div>
 <div class="app">
@@ -232,6 +257,7 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
     <button data-m="type"><svg class="ic"><use href="#i-kbd"/></svg>พิมพ์</button>
     <button data-m="letter"><svg class="ic"><use href="#i-bars"/></svg>ฝึกแป้น</button>
     <button data-m="stats"><svg class="ic"><use href="#i-chart"/></svg>สถิติ</button>
+    <button data-m="admin" id="tabadm" hidden><svg class="ic"><use href="#i-lock"/></svg>แอดมิน</button>
   </nav>
   <div class="opts" id="opts"></div>
   <div id="vwrap" hidden></div>
@@ -295,6 +321,10 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
     <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์บรรทัดนี้..."></textarea>
   </div>
 
+  <div id="admp" hidden>
+    <div id="adtmp" class="gcard sm" hidden></div>
+    <div id="adbody"></div>
+  </div>
   <div id="st" hidden>
     <div class="stats">
       <div><b id="t1">0</b><span>WPM สูงสุด</span></div>
@@ -415,7 +445,7 @@ const box=$("#box"),res=$("#res");
 const inp=document.createElement("textarea");
 inp.className="ov";inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
 inp.addEventListener("paste",e=>e.preventDefault());
-let mode="song",dur=60,les="h",stF="all",spv="pick",pf="all",user=null,token="",lv=(()=>{try{return Math.min(8,Math.max(1,parseInt(localStorage.getItem("pk_lv"))||3))}catch(e){return 3}})();
+let mode="song",dur=60,les="h",stF="all",af="over",spv="pick",pf="all",user=null,token="",lv=(()=>{try{return Math.min(8,Math.max(1,parseInt(localStorage.getItem("pk_lv"))||3))}catch(e){return 3}})();
 let songTyping=false,gtmr=null,vid="";
 let target="",started=0,done=false,errs=0,keys=0,prev=0,tmr=null;
 
@@ -423,6 +453,7 @@ function buildOpts(){
   const o=$("#opts");
   if(mode==="time")o.innerHTML=[30,60,120].map(s=>`<button class="chip ${s===dur?"on":""}" data-d="${s}">${s} วินาที</button>`).join("")+lvRow();
   else if(mode==="letter")o.innerHTML=LESSONS.map(([k,t])=>`<button class="chip ${k===les?"on":""}" data-p="${k}">${t}</button>`).join("");
+  else if(mode==="admin")o.innerHTML=[["over","ภาพรวม"],["pend","รออนุมัติ"],["rep","รายงาน"],["users","ผู้ใช้"]].map(([k,t])=>`<button class="chip ${k===af?"on":""}" data-af="${k}">${t}</button>`).join("");
   else if(mode==="stats")o.innerHTML=[["all","ทั้งหมด"],["song","ตามเพลง"],["time","จับเวลา"],["type","พิมพ์"],["letter","ฝึกแป้น"]].map(([k,t])=>`<button class="chip ${k===stF?"on":""}" data-sf="${k}">${t}</button>`).join("");
   else if(mode==="song")o.innerHTML=songTyping?'<button class="chip" data-pick="1">เลือกเพลงอื่น</button><button class="chip" data-e="1">✏️ แก้ไขเนื้อเพลง</button>':(spv==="form"?'<button class="chip" data-pick="1">← กลับไปเลือกเพลง</button>':'');
   else o.innerHTML='<span class="hint">พิมพ์ให้ครบ ไม่จำกัดเวลา</span>'+lvRow();
@@ -432,7 +463,7 @@ function reset(){
   res.hidden=true;
   const S=mode==="song",setup=S&&!songTyping;
   document.body.classList.toggle("ws",S);
-  const HD={song:["i-pencil","สร้างเพลงใหม่","กรอกข้อมูลด้านล่างเพื่อบันทึกเพลงและพิมพ์ตามเนื้อเพลง"],time:["i-clock","จับเวลา","ทดสอบความเร็วและความแม่นยำในเวลาที่กำหนด"],type:["i-kbd","พิมพ์","พิมพ์ข้อความให้ครบโดยไม่จำกัดเวลา"],stats:["i-chart","สถิติ","ดูความก้าวหน้าการพิมพ์ของคุณ"],letter:["i-bars","ฝึกแป้น","ฝึกตำแหน่งนิ้วทีละแถวด้วยแป้นพิมพ์บนจอ"]};
+  const HD={song:["i-pencil","สร้างเพลงใหม่","กรอกข้อมูลด้านล่างเพื่อบันทึกเพลงและพิมพ์ตามเนื้อเพลง"],time:["i-clock","จับเวลา","ทดสอบความเร็วและความแม่นยำในเวลาที่กำหนด"],type:["i-kbd","พิมพ์","พิมพ์ข้อความให้ครบโดยไม่จำกัดเวลา"],stats:["i-chart","สถิติ","ดูความก้าวหน้าการพิมพ์ของคุณ"],admin:["i-lock","แอดมิน","จัดการเพลงที่แชร์ รายงาน และผู้ใช้"],letter:["i-bars","ฝึกแป้น","ฝึกตำแหน่งนิ้วทีละแถวด้วยแป้นพิมพ์บนจอ"]};
   let hd=HD[mode];
   if(S){
     if(songTyping)hd=["i-note","พิมพ์ตามเพลง",$("#stitle").value.trim()||"พิมพ์ทีละบรรทัดตามเนื้อเพลง"];
@@ -441,11 +472,12 @@ function reset(){
     cnt();renderShare();
   }
   $("#phi").innerHTML='<use href="#'+hd[0]+'"/>';$("#pht").textContent=hd[1];$("#phs").textContent=hd[2];
-  const ST=mode==="stats";
-  $("#std").hidden=mode==="letter"||S||ST;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);$("#st").hidden=!ST;
-  $("#vwrap").hidden=!S||(setup&&spv==="pick");$("#sp").hidden=!(setup&&spv==="form");$("#pk").hidden=!(setup&&spv==="pick");$("#reset").hidden=setup||ST;
+  const ST=mode==="stats",ADM=mode==="admin";
+  $("#std").hidden=mode==="letter"||S||ST||ADM;$("#lp").hidden=mode!=="letter";$("#sg").hidden=!(S&&songTyping);$("#st").hidden=!ST;$("#admp").hidden=!ADM;
+  $("#vwrap").hidden=!S||(setup&&spv==="pick");$("#sp").hidden=!(setup&&spv==="form");$("#pk").hidden=!(setup&&spv==="pick");$("#reset").hidden=setup||ST||ADM;
   if(S){loadVid();if(songTyping)greset();else if(spv==="pick")renderPicker();return}
   if(ST){renderStats();return}
+  if(ADM){renderAdmin();return}
   if(mode==="letter"){lreset();return}
   inp.value="";inp.disabled=false;prev=0;errs=keys=0;started=0;done=false;
   if(setup)return;
@@ -749,7 +781,7 @@ $("#pchips").onclick=e=>{const b=e.target.closest("button");if(!b)return;pf=b.da
 $("#pq").addEventListener("input",renderPicker);
 /* ---------- บัญชีผู้ใช้ + เชื่อม Google Sheet ---------- */
 const API_URL="https://script.google.com/macros/s/AKfycbz5c_bd9j6byLvmUJyNU1ifPblXODC-Yf1rkhc5i1yX-Wq_0MP9ao4frW8v2wq1_JhZ/exec";
-const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้"};
+const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้",forbidden:"ไม่มีสิทธิ์แอดมิน",disabled:"บัญชีนี้ถูกระงับ ติดต่อผู้ดูแล",self_action:"ทำกับบัญชีของตัวเองไม่ได้",bad_status:"สถานะไม่ถูกต้อง"};
 const errMsg=c=>ERR[c]||("เกิดข้อผิดพลาด ("+c+")");
 async function api(action,payload){
   try{
@@ -764,14 +796,20 @@ function setAuth(u,t){
   user=u;token=t||"";
   try{if(u){localStorage.setItem(UK,JSON.stringify(u));localStorage.setItem(TK,token)}else{localStorage.removeItem(UK);localStorage.removeItem(TK)}}catch(e){}
 }
+function updateAdminTab(){
+  const isA=!!(user&&user.role==="admin");
+  $("#tabadm").hidden=!isA;
+  if(!isA&&mode==="admin")goSong();
+}
 function renderProf(){
+  updateAdminTab();
   const el=$("#prof");
   $("#shint").textContent=user?"เพลงของคุณเก็บไว้ในบัญชี เปิดจากเครื่องไหนก็ได้":"ยังไม่ได้ล็อกอิน เพลงเก็บไว้ในเครื่องนี้เท่านั้น";
   el.innerHTML=user
-    ?`<div class="pf"><div class="av">${esc([...user.displayName][0]||"?")}</div><div class="pn"><b>${esc(user.displayName)}</b><small>@${esc(user.username)}</small></div><button class="x2" id="plogout" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-out"/></svg></button></div>`
+    ?`<div class="pf"><button class="pfb" id="pacct" aria-label="บัญชีของฉัน"><div class="av">${esc([...user.displayName][0]||"?")}</div><div class="pn"><b>${esc(user.displayName)}</b><small>@${esc(user.username)}${user.role==="admin"?' · <span class="adm">แอดมิน</span>':""}</small></div></button><button class="x2" id="plogout" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-out"/></svg></button></div>`
     :`<button class="newbtn" id="plogin"><svg class="ic"><use href="#i-user"/></svg>เข้าสู่ระบบ / สมัครสมาชิก</button>`;
 }
-$("#prof").onclick=e=>{if(e.target.closest("#plogout"))logout();else if(e.target.closest("#plogin"))openAuth("login")};
+$("#prof").onclick=e=>{if(e.target.closest("#plogout"))logout();else if(e.target.closest("#plogin"))openAuth("login");else if(e.target.closest("#pacct"))openAcct()};
 function reloadGuest(){
   try{songs=JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){songs=[]}
   try{hist=JSON.parse(localStorage.getItem(SK)||"[]")}catch(e){hist=[]}
@@ -848,6 +886,73 @@ $("#migyes").onclick=async()=>{
   await afterLogin();
 };
 $("#migno").onclick=()=>{$("#mig").hidden=true};
+
+/* ---------- บัญชีของฉัน ---------- */
+function openAcct(){$("#acdn").value=user.displayName;$("#acold").value="";$("#acnew").value="";$("#acerr").textContent="";$("#acct").hidden=false;setTimeout(()=>$("#acdn").focus(),50)}
+$("#acclose").onclick=()=>{$("#acct").hidden=true};
+$("#acct").addEventListener("keydown",e=>{if(e.key==="Escape")$("#acclose").click()});
+$("#acsave").onclick=async()=>{
+  const dn=$("#acdn").value.trim();
+  if(!dn){$("#acerr").textContent=ERR.bad_displayname;return}
+  $("#acerr").textContent="กำลังบันทึก...";
+  const r=await api("updateProfile",{displayName:dn});
+  if(!r.ok){$("#acerr").textContent=errMsg(r.error);return}
+  setAuth(Object.assign({},user,r.user),token);renderProf();$("#acerr").textContent="บันทึกชื่อแล้ว";
+};
+$("#acpw").onclick=async()=>{
+  const o=$("#acold").value,n=$("#acnew").value;
+  if(!o||!n){$("#acerr").textContent="กรอกรหัสผ่านเดิมและรหัสผ่านใหม่";return}
+  $("#acerr").textContent="กำลังเปลี่ยนรหัสผ่าน...";
+  const r=await api("changePassword",{oldPassword:o,newPassword:n});
+  if(!r.ok){$("#acerr").textContent=errMsg(r.error);return}
+  setAuth(Object.assign({},user,r.user),r.token);
+  $("#acold").value="";$("#acnew").value="";$("#acerr").textContent="เปลี่ยนรหัสผ่านแล้ว";
+};
+
+/* ---------- หน้าแอดมิน ---------- */
+let adSeq=0;
+function safeLink(l){return /^https?:\/\//i.test(l||"")?`<a class="hint" href="${esc(l)}" target="_blank" rel="noopener noreferrer">เปิดลิงก์ YouTube</a>`:""}
+async function renderAdmin(){
+  const el=$("#adbody"),seq=++adSeq;
+  if(!(user&&user.role==="admin")){el.innerHTML='<p class="hint">เมนูนี้สำหรับแอดมินเท่านั้น</p>';return}
+  el.innerHTML='<p class="hint">กำลังโหลด...</p>';
+  const r=await api(af==="over"?"admin.overview":af==="pend"?"admin.pending":af==="rep"?"admin.reports":"admin.users");
+  if(seq!==adSeq)return;
+  if(!r.ok){el.innerHTML=`<p class="hint err">${esc(errMsg(r.error))}</p>`;return}
+  let h="";
+  if(af==="over"){
+    const c=r.counts;
+    h=`<div class="stats">${[["ผู้ใช้",c.users],["เพลงทั้งหมด",c.songs],["รออนุมัติ",c.pending],["เผยแพร่แล้ว",c.approved],["รายงานค้างอยู่",c.reports],["รอบที่พิมพ์ทั้งหมด",c.sessions]].map(([l,v])=>`<div><b>${v}</b><span>${l}</span></div>`).join("")}</div><p class="hint">เลือกแท็บด้านบนเพื่อจัดการเพลงที่รออนุมัติ รายงาน และผู้ใช้</p>`;
+  }else if(af==="pend"){
+    h=r.songs.length?r.songs.map(s=>`<article class="gcard acard"><div class="ah"><b>${esc(s.title)}</b><small class="hint">โดย ${esc(s.ownerName)} · ${esc(ago(Date.parse(s.updatedAt)))}</small></div>${safeLink(s.link)}<details><summary>ดูเนื้อเพลง</summary><pre>${esc(s.lyrics)}</pre></details><div class="bt2"><button class="pb" data-act="approve" data-id="${esc(s.id)}">อนุมัติ</button><button class="sb" data-act="reject" data-id="${esc(s.id)}">ไม่อนุมัติ</button><button class="sb" data-act="del" data-id="${esc(s.id)}">ลบ</button></div></article>`).join(""):'<p class="hint">ไม่มีเพลงรออนุมัติ</p>';
+  }else if(af==="rep"){
+    h=r.reports.length?r.reports.map(x=>`<article class="gcard acard"><div class="ah"><b>${esc(x.title)}</b><small class="hint">${esc(ago(Date.parse(x.at)))} · สถานะเพลง: ${esc(x.status)}</small></div><p>เหตุผล: ${esc(x.reason||"-")}</p><div class="bt2">${x.status!=="deleted"?`<button class="sb" data-act="hide" data-id="${esc(x.songId)}">ซ่อนเพลง</button><button class="sb" data-act="del" data-id="${esc(x.songId)}">ลบเพลง</button>`:""}<button class="pb" data-act="dismiss" data-id="${esc(x.songId)}" data-at="${esc(x.at)}">ปิดเรื่อง</button></div></article>`).join(""):'<p class="hint">ไม่มีรายงาน</p>';
+  }else{
+    h=r.users.map(x=>`<div class="gcard urow"><div class="un"><b>${esc(x.displayName)}</b> <small class="hint">@${esc(x.username)}</small>${x.role==="admin"?' <small class="adm">แอดมิน</small>':""}${x.status==="disabled"?' <small class="badge2">ถูกระงับ</small>':""}<br><small class="hint">สมัครเมื่อ ${esc(ago(Date.parse(x.createdAt)))}</small></div>${x.id===user.id?"":`<button class="sb" data-act="pw" data-id="${esc(x.id)}">รีเซ็ตรหัส</button><button class="sb" data-act="${x.status==="disabled"?"enable":"disable"}" data-id="${esc(x.id)}">${x.status==="disabled"?"เปิดใช้":"ระงับ"}</button>`}</div>`).join("");
+  }
+  el.innerHTML=h;
+}
+$("#adbody").onclick=async e=>{
+  const b=e.target.closest("button[data-act]");if(!b)return;
+  const act=b.dataset.act,id=b.dataset.id,box=$("#adtmp");
+  if((act==="del"||act==="disable"||act==="reject")&&b.dataset.arm!=="1"){
+    b.dataset.arm="1";const t=b.textContent;b.textContent="กดอีกครั้งเพื่อยืนยัน";
+    setTimeout(()=>{b.dataset.arm="";b.textContent=t},3000);return;
+  }
+  b.disabled=true;let r;
+  if(act==="approve")r=await api("admin.setStatus",{id,status:"approved"});
+  else if(act==="reject"||act==="hide")r=await api("admin.setStatus",{id,status:"private"});
+  else if(act==="del")r=await api("admin.deleteSong",{id});
+  else if(act==="dismiss")r=await api("admin.dismissReport",{songId:id,at:b.dataset.at});
+  else if(act==="disable"||act==="enable")r=await api("admin.userStatus",{id,status:act==="disable"?"disabled":"active"});
+  else if(act==="pw"){
+    r=await api("admin.resetPassword",{id});
+    if(r.ok){box.hidden=false;box.innerHTML=`รหัสผ่านชั่วคราวของ <b>@${esc(r.username)}</b>: <b class="tmp">${esc(r.tempPassword)}</b><br><span class="hint">แสดงครั้งเดียว ส่งให้ผู้ใช้ แล้วให้เข้าไปเปลี่ยนรหัสที่ "บัญชีของฉัน"</span>`}
+  }
+  if(!r||!r.ok){b.disabled=false;box.hidden=false;box.textContent=errMsg(r&&r.error);return}
+  if(act!=="pw")box.hidden=true;
+  pubCache=null;renderAdmin();
+};
 
 /* ---------- ภาพปกจาก YouTube + เพลงจากทุกคน + แชร์ ---------- */
 function thumbHTML(s){
@@ -1016,6 +1121,7 @@ $("#opts").onclick=e=>{
   if(b.dataset.d)dur=+b.dataset.d;
   if(b.dataset.p)les=b.dataset.p;
   if(b.dataset.sf)stF=b.dataset.sf;
+  if(b.dataset.af)af=b.dataset.af;
   if(b.dataset.lv){lv=+b.dataset.lv;try{localStorage.setItem("pk_lv",String(lv))}catch(e){}}
   if(b.dataset.pick){songTyping=false;spv="pick";const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
   if(b.dataset.e){songTyping=false;spv="form";const f=$("#vwrap iframe");if(f&&vid)f.src=ytSrc(vid,false)}
