@@ -200,6 +200,10 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
 .urow .un{flex:1;min-width:150px}
 .urow .sb{flex:none;min-height:40px;padding:0 12px}
 .tmp{font-family:monospace;font-size:17px;letter-spacing:1px}
+.bdg{margin-left:6px;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:#fff;color:#c1402a;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.tabs button:not(.on) .bdg{background:var(--ac);color:#fff}
+.athumb{max-width:260px;margin:8px 0}
+.claim{margin-top:12px;font-size:14px}.claim summary{cursor:pointer;color:var(--mut);padding:6px 0}
 </style>
 </head>
 <body>
@@ -231,6 +235,11 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
     <div class="fi"><svg class="ic"><use href="#i-lock"/></svg><input id="acnew" type="password" class="inp" autocomplete="new-password"></div>
     <div class="hint err" id="acerr" role="alert"></div>
     <button class="go" id="acpw">เปลี่ยนรหัสผ่าน</button>
+    <details id="claimbox" class="claim"><summary>ฉันเป็นเจ้าของเว็บ (ใช้รหัสแอดมิน)</summary>
+      <p class="hint">ตั้งค่า ADMIN_CODE ใน Apps Script ก่อน (Project Settings &gt; Script properties) แล้วใส่รหัสนั้นที่นี่ ใช้ได้ครั้งเดียว</p>
+      <div class="fi"><svg class="ic"><use href="#i-lock"/></svg><input id="clcode" type="password" class="inp" autocomplete="off"></div>
+      <button class="go sec" id="clgo">ยืนยันเป็นแอดมิน</button>
+    </details>
     <button class="ghost" id="acclose">ปิด</button>
   </div>
 </div>
@@ -257,7 +266,7 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
     <button data-m="type"><svg class="ic"><use href="#i-kbd"/></svg>พิมพ์</button>
     <button data-m="letter"><svg class="ic"><use href="#i-bars"/></svg>ฝึกแป้น</button>
     <button data-m="stats"><svg class="ic"><use href="#i-chart"/></svg>สถิติ</button>
-    <button data-m="admin" id="tabadm" hidden><svg class="ic"><use href="#i-lock"/></svg>แอดมิน</button>
+    <button data-m="admin" id="tabadm" hidden><svg class="ic"><use href="#i-lock"/></svg>แอดมิน<span id="admbadge" class="bdg" hidden></span></button>
   </nav>
   <div class="opts" id="opts"></div>
   <div id="vwrap" hidden></div>
@@ -445,7 +454,7 @@ const box=$("#box"),res=$("#res");
 const inp=document.createElement("textarea");
 inp.className="ov";inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
 inp.addEventListener("paste",e=>e.preventDefault());
-let mode="song",dur=60,les="h",stF="all",af="over",spv="pick",pf="all",user=null,token="",lv=(()=>{try{return Math.min(8,Math.max(1,parseInt(localStorage.getItem("pk_lv"))||3))}catch(e){return 3}})();
+let mode="song",dur=60,les="h",stF="all",af="over",admPending=0,adFresh=true,spv="pick",pf="all",user=null,token="",lv=(()=>{try{return Math.min(8,Math.max(1,parseInt(localStorage.getItem("pk_lv"))||3))}catch(e){return 3}})();
 let songTyping=false,gtmr=null,vid="";
 let target="",started=0,done=false,errs=0,keys=0,prev=0,tmr=null;
 
@@ -781,7 +790,7 @@ $("#pchips").onclick=e=>{const b=e.target.closest("button");if(!b)return;pf=b.da
 $("#pq").addEventListener("input",renderPicker);
 /* ---------- บัญชีผู้ใช้ + เชื่อม Google Sheet ---------- */
 const API_URL="https://script.google.com/macros/s/AKfycbz5c_bd9j6byLvmUJyNU1ifPblXODC-Yf1rkhc5i1yX-Wq_0MP9ao4frW8v2wq1_JhZ/exec";
-const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้",forbidden:"ไม่มีสิทธิ์แอดมิน",disabled:"บัญชีนี้ถูกระงับ ติดต่อผู้ดูแล",self_action:"ทำกับบัญชีของตัวเองไม่ได้",bad_status:"สถานะไม่ถูกต้อง"};
+const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้",forbidden:"ไม่มีสิทธิ์แอดมิน",disabled:"บัญชีนี้ถูกระงับ ติดต่อผู้ดูแล",self_action:"ทำกับบัญชีของตัวเองไม่ได้",bad_status:"สถานะไม่ถูกต้อง",no_admin_code:"ยังไม่ได้ตั้งรหัสแอดมินใน Apps Script (ADMIN_CODE ต้องยาวอย่างน้อย 10 ตัว)",bad_code:"รหัสแอดมินไม่ถูกต้อง"};
 const errMsg=c=>ERR[c]||("เกิดข้อผิดพลาด ("+c+")");
 async function api(action,payload){
   try{
@@ -795,6 +804,13 @@ const writeMeta=m=>{try{localStorage.setItem(MK,JSON.stringify(m))}catch(e){}};
 function setAuth(u,t){
   user=u;token=t||"";
   try{if(u){localStorage.setItem(UK,JSON.stringify(u));localStorage.setItem(TK,token)}else{localStorage.removeItem(UK);localStorage.removeItem(TK)}}catch(e){}
+}
+async function refreshAdminBadge(){
+  const b=$("#admbadge");
+  if(!(user&&user.role==="admin")){b.hidden=true;return}
+  const r=await api("admin.overview");
+  if(!r.ok)return;
+  admPending=r.counts.pending;b.textContent=admPending;b.hidden=!(admPending>0);
 }
 function updateAdminTab(){
   const isA=!!(user&&user.role==="admin");
@@ -821,7 +837,7 @@ async function afterLogin(){
   const meta=readMeta();
   if(a.ok)songs=a.songs.map(x=>Object.assign({},x,meta[x.id]||{}));
   if(b.ok)hist=b.stats.map(x=>({t:Date.parse(x.at),m:x.mode,l:"th",w:x.wpm,a:x.acc,s:x.sec,c:x.chars,ti:x.title,sid:x.songId||null}));
-  pubCache=null;renderSongs();reset();checkMigrate();
+  pubCache=null;renderSongs();reset();checkMigrate();adFresh=true;refreshAdminBadge();
 }
 async function logout(){
   if(token)await api("logout");
@@ -888,7 +904,16 @@ $("#migyes").onclick=async()=>{
 $("#migno").onclick=()=>{$("#mig").hidden=true};
 
 /* ---------- บัญชีของฉัน ---------- */
-function openAcct(){$("#acdn").value=user.displayName;$("#acold").value="";$("#acnew").value="";$("#acerr").textContent="";$("#acct").hidden=false;setTimeout(()=>$("#acdn").focus(),50)}
+$("#clgo").onclick=async()=>{
+  const c=$("#clcode").value;
+  if(!c){$("#acerr").textContent="ใส่รหัสแอดมินก่อน";return}
+  $("#acerr").textContent="กำลังตรวจสอบ...";
+  const r=await api("claimAdmin",{code:c});
+  if(!r.ok){$("#acerr").textContent=errMsg(r.error);return}
+  setAuth(Object.assign({},user,r.user),token);adFresh=true;renderProf();refreshAdminBadge();
+  $("#clcode").value="";$("#claimbox").hidden=true;$("#acerr").textContent="เป็นแอดมินแล้ว ดูแท็บแอดมินด้านบนได้เลย";
+};
+function openAcct(){$("#acdn").value=user.displayName;$("#claimbox").hidden=user.role==="admin";$("#clcode").value="";$("#acold").value="";$("#acnew").value="";$("#acerr").textContent="";$("#acct").hidden=false;setTimeout(()=>$("#acdn").focus(),50)}
 $("#acclose").onclick=()=>{$("#acct").hidden=true};
 $("#acct").addEventListener("keydown",e=>{if(e.key==="Escape")$("#acclose").click()});
 $("#acsave").onclick=async()=>{
@@ -913,6 +938,7 @@ $("#acpw").onclick=async()=>{
 let adSeq=0;
 function safeLink(l){return /^https?:\/\//i.test(l||"")?`<a class="hint" href="${esc(l)}" target="_blank" rel="noopener noreferrer">เปิดลิงก์ YouTube</a>`:""}
 async function renderAdmin(){
+  if(adFresh){adFresh=false;if(admPending>0&&af==="over"){af="pend";buildOpts()}}
   const el=$("#adbody"),seq=++adSeq;
   if(!(user&&user.role==="admin")){el.innerHTML='<p class="hint">เมนูนี้สำหรับแอดมินเท่านั้น</p>';return}
   el.innerHTML='<p class="hint">กำลังโหลด...</p>';
@@ -924,18 +950,18 @@ async function renderAdmin(){
     const c=r.counts;
     h=`<div class="stats">${[["ผู้ใช้",c.users],["เพลงทั้งหมด",c.songs],["รออนุมัติ",c.pending],["เผยแพร่แล้ว",c.approved],["รายงานค้างอยู่",c.reports],["รอบที่พิมพ์ทั้งหมด",c.sessions]].map(([l,v])=>`<div><b>${v}</b><span>${l}</span></div>`).join("")}</div><p class="hint">เลือกแท็บด้านบนเพื่อจัดการเพลงที่รออนุมัติ รายงาน และผู้ใช้</p>`;
   }else if(af==="pend"){
-    h=r.songs.length?r.songs.map(s=>`<article class="gcard acard"><div class="ah"><b>${esc(s.title)}</b><small class="hint">โดย ${esc(s.ownerName)} · ${esc(ago(Date.parse(s.updatedAt)))}</small></div>${safeLink(s.link)}<details><summary>ดูเนื้อเพลง</summary><pre>${esc(s.lyrics)}</pre></details><div class="bt2"><button class="pb" data-act="approve" data-id="${esc(s.id)}">อนุมัติ</button><button class="sb" data-act="reject" data-id="${esc(s.id)}">ไม่อนุมัติ</button><button class="sb" data-act="del" data-id="${esc(s.id)}">ลบ</button></div></article>`).join(""):'<p class="hint">ไม่มีเพลงรออนุมัติ</p>';
+    h=r.songs.length?r.songs.map(s=>`<article class="gcard acard"><div class="ah"><b>${esc(s.title)}</b><small class="hint">โดย ${esc(s.ownerName)} · ${esc(ago(Date.parse(s.updatedAt)))}</small></div><div class="athumb">${thumbHTML(s)}</div>${safeLink(s.link)}<details><summary>ดูเนื้อเพลง</summary><pre>${esc(s.lyrics)}</pre></details><div class="bt2"><button class="pb" data-act="approve" data-id="${esc(s.id)}">อนุมัติ</button><button class="sb" data-act="reject" data-id="${esc(s.id)}">ไม่อนุมัติ</button><button class="sb" data-act="del" data-id="${esc(s.id)}">ลบ</button></div></article>`).join(""):'<p class="hint">ไม่มีเพลงรออนุมัติ</p>';
   }else if(af==="rep"){
     h=r.reports.length?r.reports.map(x=>`<article class="gcard acard"><div class="ah"><b>${esc(x.title)}</b><small class="hint">${esc(ago(Date.parse(x.at)))} · สถานะเพลง: ${esc(x.status)}</small></div><p>เหตุผล: ${esc(x.reason||"-")}</p><div class="bt2">${x.status!=="deleted"?`<button class="sb" data-act="hide" data-id="${esc(x.songId)}">ซ่อนเพลง</button><button class="sb" data-act="del" data-id="${esc(x.songId)}">ลบเพลง</button>`:""}<button class="pb" data-act="dismiss" data-id="${esc(x.songId)}" data-at="${esc(x.at)}">ปิดเรื่อง</button></div></article>`).join(""):'<p class="hint">ไม่มีรายงาน</p>';
   }else{
-    h=r.users.map(x=>`<div class="gcard urow"><div class="un"><b>${esc(x.displayName)}</b> <small class="hint">@${esc(x.username)}</small>${x.role==="admin"?' <small class="adm">แอดมิน</small>':""}${x.status==="disabled"?' <small class="badge2">ถูกระงับ</small>':""}<br><small class="hint">สมัครเมื่อ ${esc(ago(Date.parse(x.createdAt)))}</small></div>${x.id===user.id?"":`<button class="sb" data-act="pw" data-id="${esc(x.id)}">รีเซ็ตรหัส</button><button class="sb" data-act="${x.status==="disabled"?"enable":"disable"}" data-id="${esc(x.id)}">${x.status==="disabled"?"เปิดใช้":"ระงับ"}</button>`}</div>`).join("");
+    h=r.users.map(x=>`<div class="gcard urow"><div class="un"><b>${esc(x.displayName)}</b> <small class="hint">@${esc(x.username)}</small>${x.role==="admin"?' <small class="adm">แอดมิน</small>':""}${x.status==="disabled"?' <small class="badge2">ถูกระงับ</small>':""}<br><small class="hint">สมัครเมื่อ ${esc(ago(Date.parse(x.createdAt)))}</small></div>${x.id===user.id?"":`<button class="sb" data-act="pw" data-id="${esc(x.id)}">รีเซ็ตรหัส</button><button class="sb" data-act="${x.status==="disabled"?"enable":"disable"}" data-id="${esc(x.id)}">${x.status==="disabled"?"เปิดใช้":"ระงับ"}</button><button class="sb" data-act="${x.role==="admin"?"rmadmin":"mkadmin"}" data-id="${esc(x.id)}">${x.role==="admin"?"ถอดแอดมิน":"ตั้งเป็นแอดมิน"}</button>`}</div>`).join("");
   }
   el.innerHTML=h;
 }
 $("#adbody").onclick=async e=>{
   const b=e.target.closest("button[data-act]");if(!b)return;
   const act=b.dataset.act,id=b.dataset.id,box=$("#adtmp");
-  if((act==="del"||act==="disable"||act==="reject")&&b.dataset.arm!=="1"){
+  if((act==="del"||act==="disable"||act==="reject"||act==="mkadmin"||act==="rmadmin")&&b.dataset.arm!=="1"){
     b.dataset.arm="1";const t=b.textContent;b.textContent="กดอีกครั้งเพื่อยืนยัน";
     setTimeout(()=>{b.dataset.arm="";b.textContent=t},3000);return;
   }
@@ -945,13 +971,14 @@ $("#adbody").onclick=async e=>{
   else if(act==="del")r=await api("admin.deleteSong",{id});
   else if(act==="dismiss")r=await api("admin.dismissReport",{songId:id,at:b.dataset.at});
   else if(act==="disable"||act==="enable")r=await api("admin.userStatus",{id,status:act==="disable"?"disabled":"active"});
+  else if(act==="mkadmin"||act==="rmadmin")r=await api("admin.setRole",{id,role:act==="mkadmin"?"admin":"user"});
   else if(act==="pw"){
     r=await api("admin.resetPassword",{id});
     if(r.ok){box.hidden=false;box.innerHTML=`รหัสผ่านชั่วคราวของ <b>@${esc(r.username)}</b>: <b class="tmp">${esc(r.tempPassword)}</b><br><span class="hint">แสดงครั้งเดียว ส่งให้ผู้ใช้ แล้วให้เข้าไปเปลี่ยนรหัสที่ "บัญชีของฉัน"</span>`}
   }
   if(!r||!r.ok){b.disabled=false;box.hidden=false;box.textContent=errMsg(r&&r.error);return}
   if(act!=="pw")box.hidden=true;
-  pubCache=null;renderAdmin();
+  pubCache=null;renderAdmin();refreshAdminBadge();
 };
 
 /* ---------- ภาพปกจาก YouTube + เพลงจากทุกคน + แชร์ ---------- */
