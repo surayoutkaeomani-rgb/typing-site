@@ -17,7 +17,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Sarabun','Noto Sans Thai'
 button,input,textarea{font-family:inherit}
 .ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ic.big{width:28px;height:28px;color:var(--ac)}
-.app{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:270px 1fr;min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.app{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:270px 1fr;min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 .side{background:var(--panel);border-right:1px solid var(--ln);padding:26px 18px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow:auto}
 .brand{display:flex;gap:12px;align-items:center}
 .brand b{display:block;font-size:20px}
@@ -204,6 +204,30 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
 .tabs button:not(.on) .bdg{background:var(--ac);color:#fff}
 .athumb{max-width:260px;margin:8px 0}
 .claim{margin-top:12px;font-size:14px}.claim summary{cursor:pointer;color:var(--mut);padding:6px 0}
+.lbp{padding:16px;margin:16px 16px 16px 0;align-self:start;position:sticky;top:16px;border-radius:24px}
+.lbh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lbh b{font-size:17px}
+.lbl{list-style:none;margin:10px 0 0;padding:0}
+.lbl li{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:12px}
+.lbl li.me{background:color-mix(in srgb,var(--ac) 14%,transparent);outline:1px solid var(--ac)}
+.lbl .rk{width:30px;text-align:center;font-weight:700;font-size:18px;flex:none}
+.lbl .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.lbl .nm small,.lbl .sc small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+.lbl .sc{font-weight:700;color:var(--ac);flex:none;text-align:right}
+img.av{object-fit:cover}
+.av.sm{width:32px;height:32px;font-size:14px}
+.av.big{width:72px;height:72px;font-size:28px}
+.avrow{display:flex;align-items:center;gap:14px;margin:10px 0 2px}
+.avrow .bt2{margin:0;flex-wrap:wrap}
+.tier{font-size:22px;margin:0 0 6px}
+.tier.t1{color:var(--mut)}
+.tier.t2{color:#d98b1d}
+.tier.t3{color:var(--ok)}
+.tier.t4{font-size:24px}
+.tier.t4 .tt2{background:linear-gradient(90deg,#ff9a5a,#e0407f,#7a5af5);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(min-width:1360px){.app{grid-template-columns:270px minmax(0,1fr) 300px}}
+@media(max-width:1359px) and (min-width:860px){.lbp{grid-column:2;position:static;margin:0 32px 32px}}
+@media(max-width:859px){.lbp{margin:0 16px 32px;position:static}}
 </style>
 </head>
 <body>
@@ -226,6 +250,7 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
 <div id="acct" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="actitle">
   <div class="gcard authc">
     <h2 id="actitle">บัญชีของฉัน</h2>
+    <div class="avrow"><div id="acav"></div><div><div class="bt2"><button class="sb" id="acpick" type="button">เลือกรูปจากเครื่อง</button><button class="sb" id="acrm" type="button">ลบรูป</button></div><input type="file" id="acfile" accept="image/*" hidden></div></div>
     <label class="fl2" for="acdn">ชื่อที่แสดง</label>
     <div class="fi"><svg class="ic"><use href="#i-user"/></svg><input id="acdn" class="inp" maxlength="30"></div>
     <button class="go sec" id="acsave">บันทึกชื่อ</button>
@@ -354,6 +379,11 @@ img.mini{width:44px;height:25px;object-fit:cover;border-radius:6px;flex:none}
   <div class="res" id="res" hidden></div>
   <button class="go" id="reset"><svg class="ic"><use href="#i-play"/></svg>เริ่มใหม่</button>
 </main>
+<aside id="lbp" class="lbp gcard" aria-label="10 อันดับ WPM สูงสุด">
+  <div class="lbh"><b>🏆 10 อันดับ WPM สูงสุด</b><button id="lbr" class="x2" type="button" aria-label="รีเฟรชอันดับ" title="รีเฟรช">↻</button></div>
+  <p class="hint" style="margin:4px 0 0">นับ WPM ที่ดีที่สุดคนละ 1 ครั้ง จากทุกหมวด</p>
+  <ol id="lbl" class="lbl"></ol>
+</aside>
 </div>
 <script>
 const $=s=>document.querySelector(s);
@@ -490,7 +520,7 @@ function reset(){
   if(mode==="letter"){lreset();return}
   inp.value="";inp.disabled=false;prev=0;errs=keys=0;started=0;done=false;
   if(setup)return;
-  target=genText(mode==="time"?40:18);
+  target=genText(mode==="time"?40:54);
   draw();stats();
 }
 function draw(){
@@ -518,7 +548,8 @@ function showRes(el,c,acc){
   const wpm=Math.round(c/5/(el/60));
   recordStat(el,c,acc,wpm);
   res.hidden=false;
-  res.innerHTML=`<h2>เสร็จแล้ว! 🎉</h2><p><b style="color:var(--tx);font-size:32px">${wpm}</b> WPM</p><p>แม่นยำ ${acc}% · พิมพ์ถูก ${c} ตัวอักษร · ใช้เวลา ${Math.round(el)} วินาที</p>`;
+  const T=tierOf(wpm);
+  res.innerHTML=`<h2 class="tier ${T[2]}"><span class="tt2">${T[0]}</span> ${T[1]}</h2><p><b style="color:var(--tx);font-size:32px">${wpm}</b> WPM</p><p>แม่นยำ ${acc}% · พิมพ์ถูก ${c} ตัวอักษร · ใช้เวลา ${Math.round(el)} วินาที</p>`;
 }
 function finish(){
   done=true;clearInterval(tmr);inp.disabled=true;
@@ -644,7 +675,7 @@ function recordStat(el,c,acc,wpm){
   hist.push({t:Date.now(),m:mode,l:lang,w:wpm,a:acc,s:Math.round(el),c,ti,sid:mode==="song"?curId:null});
   if(hist.length>300)hist=hist.slice(-300);
   saveHist();
-  if(user)api("stats.add",{mode:mode,wpm:wpm,acc:acc,sec:Math.max(1,Math.round(el)),chars:c,title:ti,songId:mode==="song"?(curId||""):""});
+  if(user)api("stats.add",{mode:mode,wpm:wpm,acc:acc,sec:Math.max(1,Math.round(el)),chars:c,title:ti,songId:mode==="song"?(curId||""):""}).then(()=>loadLb());
 }
 function renderStats(){
   $("#sclr").hidden=!!user;
@@ -790,7 +821,7 @@ $("#pchips").onclick=e=>{const b=e.target.closest("button");if(!b)return;pf=b.da
 $("#pq").addEventListener("input",renderPicker);
 /* ---------- บัญชีผู้ใช้ + เชื่อม Google Sheet ---------- */
 const API_URL="https://script.google.com/macros/s/AKfycbz5c_bd9j6byLvmUJyNU1ifPblXODC-Yf1rkhc5i1yX-Wq_0MP9ao4frW8v2wq1_JhZ/exec";
-const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้",forbidden:"ไม่มีสิทธิ์แอดมิน",disabled:"บัญชีนี้ถูกระงับ ติดต่อผู้ดูแล",self_action:"ทำกับบัญชีของตัวเองไม่ได้",bad_status:"สถานะไม่ถูกต้อง",no_admin_code:"ยังไม่ได้ตั้งรหัสแอดมินใน Apps Script (ADMIN_CODE ต้องยาวอย่างน้อย 10 ตัว)",bad_code:"รหัสแอดมินไม่ถูกต้อง"};
+const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้",forbidden:"ไม่มีสิทธิ์แอดมิน",disabled:"บัญชีนี้ถูกระงับ ติดต่อผู้ดูแล",self_action:"ทำกับบัญชีของตัวเองไม่ได้",bad_status:"สถานะไม่ถูกต้อง",bad_avatar:"รูปไม่ถูกต้องหรือใหญ่เกินไป ลองเลือกรูปอื่น",no_admin_code:"ยังไม่ได้ตั้งรหัสแอดมินใน Apps Script (ADMIN_CODE ต้องยาวอย่างน้อย 10 ตัว)",bad_code:"รหัสแอดมินไม่ถูกต้อง"};
 const errMsg=c=>ERR[c]||("เกิดข้อผิดพลาด ("+c+")");
 async function api(action,payload){
   try{
@@ -822,7 +853,7 @@ function renderProf(){
   const el=$("#prof");
   $("#shint").textContent=user?"เพลงของคุณเก็บไว้ในบัญชี เปิดจากเครื่องไหนก็ได้":"ยังไม่ได้ล็อกอิน เพลงเก็บไว้ในเครื่องนี้เท่านั้น";
   el.innerHTML=user
-    ?`<div class="pf"><button class="pfb" id="pacct" aria-label="บัญชีของฉัน"><div class="av">${esc([...user.displayName][0]||"?")}</div><div class="pn"><b>${esc(user.displayName)}</b><small>@${esc(user.username)}${user.role==="admin"?' · <span class="adm">แอดมิน</span>':""}</small></div></button><button class="x2" id="plogout" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-out"/></svg></button></div>`
+    ?`<div class="pf"><button class="pfb" id="pacct" aria-label="บัญชีของฉัน">${avHTML(user)}<div class="pn"><b>${esc(user.displayName)}</b><small>@${esc(user.username)}${user.role==="admin"?' · <span class="adm">แอดมิน</span>':""}</small></div></button><button class="x2" id="plogout" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-out"/></svg></button></div>`
     :`<button class="newbtn" id="plogin"><svg class="ic"><use href="#i-user"/></svg>เข้าสู่ระบบ / สมัครสมาชิก</button>`;
 }
 $("#prof").onclick=e=>{if(e.target.closest("#plogout"))logout();else if(e.target.closest("#plogin"))openAuth("login");else if(e.target.closest("#pacct"))openAcct()};
@@ -837,11 +868,11 @@ async function afterLogin(){
   const meta=readMeta();
   if(a.ok)songs=a.songs.map(x=>Object.assign({},x,meta[x.id]||{}));
   if(b.ok)hist=b.stats.map(x=>({t:Date.parse(x.at),m:x.mode,l:"th",w:x.wpm,a:x.acc,s:x.sec,c:x.chars,ti:x.title,sid:x.songId||null}));
-  pubCache=null;renderSongs();reset();checkMigrate();adFresh=true;refreshAdminBadge();
+  pubCache=null;renderSongs();reset();checkMigrate();adFresh=true;refreshAdminBadge();loadLb();
 }
 async function logout(){
   if(token)await api("logout");
-  setAuth(null);reloadGuest();newSong();renderProf();spv="pick";reset();
+  setAuth(null);reloadGuest();newSong();renderProf();spv="pick";reset();loadLb();
 }
 async function initAuth(){
   renderProf();
@@ -863,7 +894,7 @@ function setAuthMode(){
   $("#asub").textContent=reg?"สร้างบัญชี":"เข้าสู่ระบบ";
   $("#ap").autocomplete=reg?"new-password":"current-password";
 }
-function openAuth(m,msg){amode=m||"login";$("#auth").hidden=false;setAuthMode();$("#aerr").textContent=msg||"";setTimeout(()=>$("#au").focus(),50)}
+function openAuth(m,msg){amode=m||"login";$("#auth").hidden=false;setAuthMode();$("#aerr").textContent=msg||"";setTimeout(()=>{if(!$("#auth").contains(document.activeElement))$("#au").focus()},50)}
 $("#atl").onclick=()=>{amode="login";setAuthMode()};
 $("#atr").onclick=()=>{amode="reg";setAuthMode()};
 $("#aeye").onclick=()=>{const p=$("#ap");p.type=p.type==="password"?"text":"password"};
@@ -913,7 +944,7 @@ $("#clgo").onclick=async()=>{
   setAuth(Object.assign({},user,r.user),token);adFresh=true;renderProf();refreshAdminBadge();
   $("#clcode").value="";$("#claimbox").hidden=true;$("#acerr").textContent="เป็นแอดมินแล้ว ดูแท็บแอดมินด้านบนได้เลย";
 };
-function openAcct(){$("#acdn").value=user.displayName;$("#claimbox").hidden=user.role==="admin";$("#clcode").value="";$("#acold").value="";$("#acnew").value="";$("#acerr").textContent="";$("#acct").hidden=false;setTimeout(()=>$("#acdn").focus(),50)}
+function openAcct(){showAcAv();$("#acdn").value=user.displayName;$("#claimbox").hidden=user.role==="admin";$("#clcode").value="";$("#acold").value="";$("#acnew").value="";$("#acerr").textContent="";$("#acct").hidden=false;setTimeout(()=>{if(!$("#acct").contains(document.activeElement))$("#acdn").focus()},50)}
 $("#acclose").onclick=()=>{$("#acct").hidden=true};
 $("#acct").addEventListener("keydown",e=>{if(e.key==="Escape")$("#acclose").click()});
 $("#acsave").onclick=async()=>{
@@ -933,6 +964,62 @@ $("#acpw").onclick=async()=>{
   setAuth(Object.assign({},user,r.user),r.token);
   $("#acold").value="";$("#acnew").value="";$("#acerr").textContent="เปลี่ยนรหัสผ่านแล้ว";
 };
+
+/* ---------- อันดับ รูปโปรไฟล์ และเทียร์ ---------- */
+const MEDAL=["🥇","🥈","🥉"];
+const MODE_TH={song:"ตามเพลง",time:"จับเวลา",type:"พิมพ์",letter:"ฝึกแป้น"};
+function avHTML(u,cls){
+  cls=cls||"";
+  return u&&u.avatar
+    ?`<img class="av ${cls}" src="${esc(u.avatar)}" alt="">`
+    :`<div class="av ${cls}">${esc([...((u&&u.displayName)||"?")][0]||"?")}</div>`;
+}
+function tierOf(w){
+  if(w>=80)return ["ขอคาราวะท่านเทพพิมพ์ดีด","😈","t4"];
+  if(w>=51)return ["โปรแกรมเมอร์ชัดๆ","🥳","t3"];
+  if(w>=30)return ["เก่งมาก พยายามอีกนะ","😉","t2"];
+  return ["พยายามเข้า","🥺","t1"];
+}
+async function loadLb(){
+  const el=$("#lbl"),r=await api("leaderboard");
+  if(!r.ok){el.innerHTML='<li class="hint">โหลดอันดับไม่ได้ ลองกดรีเฟรช</li>';return}
+  const L=r.list||[];
+  el.innerHTML=L.length
+    ?L.map((x,i)=>`<li class="${x.isMe?"me":""}"><span class="rk">${i<3?MEDAL[i]:x.rank}</span>${avHTML({avatar:x.avatar,displayName:x.name},"sm")}<span class="nm">${esc(x.name)}<small>${esc(MODE_TH[x.mode]||x.mode)}</small></span><span class="sc">${x.wpm}<small>WPM</small></span></li>`).join("")
+    :'<li class="hint">ยังไม่มีอันดับ พิมพ์ให้ครบอย่างน้อย 40 ตัวอักษร ใช้เวลา 5 วินาทีขึ้นไป เพื่อติดอันดับ</li>';
+}
+$("#lbr").onclick=loadLb;
+function showAcAv(){$("#acav").innerHTML=avHTML(user,"big");$("#acrm").hidden=!(user&&user.avatar)}
+function fileToAvatar(file){
+  return new Promise((res,rej)=>{
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const S=80,c=document.createElement("canvas");c.width=c.height=S;
+      const g=c.getContext("2d"),m=Math.min(img.width,img.height);
+      g.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);
+      URL.revokeObjectURL(url);
+      let q=.85,out=c.toDataURL("image/jpeg",q);
+      while(out.length>7000&&q>.35){q-=.1;out=c.toDataURL("image/jpeg",q)}
+      out.length>7000?rej(new Error("big")):res(out);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("bad"))};
+    img.src=url;
+  });
+}
+async function sendAvatar(data,okMsg){
+  const r=await api("updateAvatar",{avatar:data});
+  if(!r.ok){$("#acerr").textContent=errMsg(r.error);return}
+  setAuth(Object.assign({},user,r.user),token);renderProf();showAcAv();loadLb();$("#acerr").textContent=okMsg;
+}
+$("#acpick").onclick=()=>$("#acfile").click();
+$("#acfile").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  $("#acerr").textContent="กำลังอัปโหลดรูป...";
+  let data;
+  try{data=await fileToAvatar(f)}catch(err){$("#acerr").textContent="ใช้ไฟล์รูปนี้ไม่ได้ ลองรูป JPG หรือ PNG";return}
+  await sendAvatar(data,"เปลี่ยนรูปแล้ว");
+};
+$("#acrm").onclick=()=>sendAvatar("","ลบรูปแล้ว");
 
 /* ---------- หน้าแอดมิน ---------- */
 let adSeq=0;
@@ -1163,7 +1250,7 @@ $("#langs").onclick=e=>{
   $("#hint1").textContent=lang==="en"?"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาอังกฤษ)":"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)";
   buildKb();buildOpts();reset();
 };
-buildKb();buildOpts();reset();initAuth();
+buildKb();buildOpts();reset();initAuth();loadLb();
 </script>
 </body>
 </html>
