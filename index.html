@@ -228,6 +228,23 @@ img.av{object-fit:cover}
 @media(min-width:1360px){.app{grid-template-columns:270px minmax(0,1fr) 300px}}
 @media(max-width:1359px) and (min-width:860px){.lbp{grid-column:2;position:static;margin:0 32px 32px}}
 @media(max-width:859px){.lbp{margin:0 16px 32px;position:static}}
+.rwrap{position:relative}
+.row.auto{scrollbar-width:none}
+.row.auto::-webkit-scrollbar{display:none}
+.row .new{flex:0 0 190px}
+.rbtn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:20px;line-height:1;cursor:pointer;opacity:0;transition:opacity .15s;padding:0}
+.rbtn.l{left:6px}.rbtn.r{right:6px}
+.rwrap:hover .rbtn,.rbtn:focus-visible{opacity:1}
+@media(hover:none){.rbtn{display:none}}
+#sg .stats{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0}
+#sg .stats div{display:flex;align-items:baseline;gap:8px;padding:6px 18px;border-radius:99px;min-width:0}
+#sg .stats b{display:inline;font-size:18px}
+.lr{grid-template-columns:1fr 1.4fr auto auto auto}
+.sx{border:0;background:none;color:var(--mut);font-size:14px;cursor:pointer;padding:4px 8px;border-radius:8px;min-width:34px}
+.sx:hover{color:var(--bad)}
+.sx.arm{color:#fff;background:var(--bad)}
+.more{display:block;width:100%;border:0;border-top:1px solid var(--ln);background:none;color:var(--ac);font-weight:600;font-size:14px;padding:12px;cursor:pointer}
+@media(max-width:560px){.lr{grid-template-columns:1fr auto auto auto}.lr span:nth-child(2){grid-column:1/-1;order:5}}
 </style>
 </head>
 <body>
@@ -352,7 +369,7 @@ img.av{object-fit:cover}
       <div><b id="g3">100%</b><span>ความแม่นยำ</span></div>
     </div>
     <div class="line" id="gline"></div>
-    <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="พิมพ์บรรทัดนี้..."></textarea>
+    <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
   </div>
 
   <div id="admp" hidden>
@@ -373,6 +390,7 @@ img.av{object-fit:cover}
     <div class="tt" style="margin-top:18px">ประวัติการพิมพ์ล่าสุด</div>
     <div class="slog" id="slog"></div>
     <p class="hint" id="sthint"></p>
+    <button class="go sec" id="sclrf" hidden><svg class="ic"><use href="#i-save"/></svg>ล้างเฉพาะหมวดนี้</button>
     <button class="go sec" id="sclr"><svg class="ic"><use href="#i-save"/></svg>ล้างสถิติทั้งหมด</button>
   </div>
 
@@ -672,14 +690,20 @@ function recordStat(el,c,acc,wpm){
   else if(mode==="letter")ti=(LESSONS.find(l=>l[0]===les)||[])[1]||"";
   else if(mode==="time")ti="ระดับ "+lv+" · "+dur+" วินาที";
   else if(mode==="type")ti="ระดับ "+lv;
-  hist.push({t:Date.now(),m:mode,l:lang,w:wpm,a:acc,s:Math.round(el),c,ti,sid:mode==="song"?curId:null});
+  let tt=Date.now();if(hist.length&&hist[hist.length-1].t>=tt)tt=hist[hist.length-1].t+1;   // กันเวลาซ้ำกัน ใช้เป็นรหัสรอบของคนไม่ล็อกอิน
+  const entry={t:tt,m:mode,l:lang,w:wpm,a:acc,s:Math.round(el),c,ti,sid:mode==="song"?curId:null};
+  hist.push(entry);
   if(hist.length>300)hist=hist.slice(-300);
   saveHist();
-  if(user)api("stats.add",{mode:mode,wpm:wpm,acc:acc,sec:Math.max(1,Math.round(el)),chars:c,title:ti,songId:mode==="song"?(curId||""):""}).then(()=>loadLb());
+  if(user)api("stats.add",{mode:mode,wpm:wpm,acc:acc,sec:Math.max(1,Math.round(el)),chars:c,title:ti,songId:mode==="song"?(curId||""):""}).then(r=>{if(r&&r.ok&&r.id)entry.id=r.id;loadLb()});
 }
+let slogN=10;
+const statKey=x=>x.id||("t"+x.t);
 function renderStats(){
-  $("#sclr").hidden=!!user;
-  $("#sthint").textContent=user?"สถิติถูกเก็บไว้ในบัญชีของคุณ ดูได้จากทุกเครื่อง":"ยังไม่ได้ล็อกอิน สถิติเก็บในเครื่องนี้เท่านั้น";
+  $("#sclr").hidden=false;
+  $("#sclrf").hidden=stF==="all";
+  const lf=$("#sclrf");if(lf.dataset.arm!=="1")lf.lastChild.textContent="ล้างเฉพาะหมวด: "+(MODEL[stF]||"");
+  $("#sthint").textContent=(user?"สถิติถูกเก็บไว้ในบัญชีของคุณ ดูได้จากทุกเครื่อง":"ยังไม่ได้ล็อกอิน สถิติเก็บในเครื่องนี้เท่านั้น")+" · กด ✕ ท้ายแถวเพื่อลบเฉพาะรอบนั้น";
   const L=hist.filter(x=>stF==="all"||x.m===stF),n=L.length;
   const best=n?Math.max(...L.map(x=>x.w)):0;
   const avg=n?Math.round(L.reduce((a,x)=>a+x.w,0)/n):0;
@@ -693,13 +717,34 @@ function renderStats(){
     ?R.map(x=>`<div class="bar${x.w===best?" best":""}"><em>${x.w}</em><i style="height:${Math.max(3,Math.round(x.w/mx*80))}%"></i></div>`).join("")
     :'<div class="empty">ยังไม่มีสถิติ ลองพิมพ์ให้จบสักรอบ</div>';
   $("#slog").innerHTML=n
-    ?L.slice(-10).reverse().map(x=>`<div class="lr"><span>${new Date(x.t).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</span><span>${MODEL[x.m]||x.m}${x.ti?" · "+esc(x.ti):""}</span><b>${x.w} WPM</b><span>${x.a}%</span></div>`).join("")
+    ?L.slice(-slogN).reverse().map(x=>`<div class="lr"><span>${new Date(x.t).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</span><span>${MODEL[x.m]||x.m}${x.ti?" · "+esc(x.ti):""}</span><b>${x.w} WPM</b><span>${x.a}%</span><button class="sx" type="button" data-sk="${esc(statKey(x))}" title="ลบรอบนี้" aria-label="ลบรอบนี้">✕</button></div>`).join("")+(n>slogN?`<button class="more" type="button" id="slmore">แสดงเพิ่ม (อีก ${n-slogN} รอบ)</button>`:"")
     :'<div class="empty">ยังไม่มีประวัติ</div>';
 }
-$("#sclr").onclick=()=>{
-  const b=$("#sclr");
-  if(b.dataset.arm!=="1"){b.dataset.arm="1";b.lastChild.textContent="กดอีกครั้งเพื่อยืนยันลบสถิติทั้งหมด";setTimeout(()=>{b.dataset.arm="";b.lastChild.textContent="ล้างสถิติทั้งหมด"},3000);return}
-  hist=[];saveHist();b.dataset.arm="";b.lastChild.textContent="ล้างสถิติทั้งหมด";renderStats();
+// ลบสถิติ: keys = รหัสรอบที่เลือก, all = ล้างทั้งหมด (ล็อกอินแล้วลบที่เซิร์ฟเวอร์ด้วย)
+async function delStats(keys,all){
+  const hit=x=>all||keys.includes(statKey(x));
+  if(user){
+    if(!all&&hist.some(x=>hit(x)&&!x.id)){$("#sthint").textContent="รอบนี้เพิ่งบันทึก รอสักครู่แล้วกดลบอีกครั้ง";return}
+    const ids=hist.filter(hit).map(x=>x.id).filter(Boolean);
+    if(all||ids.length){
+      const r=await api("stats.delete",all?{all:true}:{ids});
+      if(!r.ok){$("#sthint").textContent=errMsg(r.error);return}
+    }
+  }
+  hist=hist.filter(x=>!hit(x));
+  saveHist();renderStats();loadLb();
+}
+function armBtn(b,label,act){
+  if(b.dataset.arm!=="1"){b.dataset.arm="1";b.lastChild.textContent="กดอีกครั้งเพื่อยืนยัน";setTimeout(()=>{b.dataset.arm="";b.lastChild.textContent=label()},3000);return}
+  b.dataset.arm="";b.lastChild.textContent=label();act();
+}
+$("#sclr").onclick=()=>armBtn($("#sclr"),()=>"ล้างสถิติทั้งหมด",()=>delStats([],true));
+$("#sclrf").onclick=()=>armBtn($("#sclrf"),()=>"ล้างเฉพาะหมวด: "+(MODEL[stF]||""),()=>delStats(hist.filter(x=>x.m===stF).map(statKey)));
+$("#slog").onclick=e=>{
+  if(e.target.closest("#slmore")){slogN+=20;renderStats();return}
+  const b=e.target.closest(".sx");if(!b)return;
+  if(b.dataset.arm!=="1"){b.dataset.arm="1";b.textContent="ลบ?";b.classList.add("arm");setTimeout(()=>{if(b.isConnected){b.dataset.arm="";b.textContent="✕";b.classList.remove("arm")}},3000);return}
+  delStats([b.dataset.sk]);
 };
 
 const LSK="typing_songs_v1";
@@ -790,12 +835,49 @@ function renderPicker(){
   const mine=songs.filter(match);
   const recent=songs.filter(s=>s.lastAt&&match(s)).sort((a,b)=>b.lastAt-a.lastAt).slice(0,8);
   let h="";
-  if((pf==="all"||pf==="recent")&&recent.length)h+=`<div class="psec"><svg class="ic"><use href="#i-clock"/></svg>เพลงที่พิมพ์ล่าสุด</div><div class="row">${recent.map(s=>pcard(s,ago(s.lastAt))).join("")}</div>`;
-  if(pf==="all"||pf==="mine")h+=`<div class="psec"><svg class="ic"><use href="#i-note"/></svg>เพลงของฉัน</div><div class="grid"><button class="new" data-new="1"><svg class="ic" style="width:30px;height:30px"><use href="#i-plus"/></svg>สร้างเพลงใหม่<span class="hint">ใส่ลิงก์ YouTube และเนื้อเพลง</span></button>${mine.map(s=>{const b=bestOf(s);return pcard(s,(b?b+" WPM · ":"ยังไม่เคยพิมพ์ · ")+(s.link?"ลิงก์ YouTube":"ยังไม่มีลิงก์"))}).join("")}</div>`;
+  if(pf==="all"||pf==="pub")h+=pubSection(q);                       // เพลงจากทุกคน: อยู่บนสุด วิ่งวนอัตโนมัติ
+  if((pf==="all"||pf==="recent")&&recent.length)h+=`<div class="psec"><svg class="ic"><use href="#i-clock"/></svg>เพลงที่พิมพ์ล่าสุด</div>${rail(recent.map(s=>pcard(s,ago(s.lastAt))).join(""))}`;
   if(pf==="recent"&&!recent.length)h+='<p class="hint" style="margin-top:20px">ยังไม่มีเพลงที่พิมพ์ล่าสุด เลือกเพลงแล้วกดพิมพ์เลยได้เลย</p>';
-  if(pf==="all"||pf==="pub")h+=pubSection(q);
+  if(pf==="all"||pf==="mine")h+=`<div class="psec"><svg class="ic"><use href="#i-note"/></svg>เพลงของฉัน</div>${rail(`<button class="new" data-new="1"><svg class="ic" style="width:30px;height:30px"><use href="#i-plus"/></svg>สร้างเพลงใหม่<span class="hint">ใส่ลิงก์ YouTube และเนื้อเพลง</span></button>`+mine.map(s=>{const b=bestOf(s);return pcard(s,(b?b+" WPM · ":"ยังไม่เคยพิมพ์ · ")+(s.link?"ลิงก์ YouTube":"ยังไม่มีลิงก์"))}).join(""))}`;
   $("#pbody").innerHTML=h;
+  setupMarquee();
 }
+
+/* แถวเพลงจากทุกคนวิ่งจากขวาไปซ้ายวนลูป: ทำสำเนาการ์ดต่อท้าย เลื่อนด้วย scrollLeft จึงใช้นิ้ว/ล้อเมาส์/ปุ่มลูกศรเลื่อนเองได้
+   หยุดเมื่อเอาเมาส์ชี้ แตะ หรือโฟกัส และไม่วิ่งถ้าเพลงมีน้อยจนพอดีจอหรือผู้ใช้ตั้งค่าลดการเคลื่อนไหว */
+let mqRaf=0,mqRz=0;
+const MQ_SPEED=42;
+function setupMarquee(){
+  cancelAnimationFrame(mqRaf);
+  const row=document.querySelector("#pbody .row.auto");
+  if(!row)return;
+  const cards=[...row.children];
+  if(!cards.length||row.scrollWidth<=row.clientWidth+8||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  cards.forEach(c=>{const k=c.cloneNode(true);k.setAttribute("aria-hidden","true");row.appendChild(k)});
+  const L=row.children[cards.length].offsetLeft-cards[0].offsetLeft;
+  let pos=row.scrollLeft,hover=false,touching=false,focused=false,resumeAt=0,last=performance.now();
+  const wrap=row.parentElement;                      // รวมปุ่มลูกศร: เอาเมาส์ชี้ตรงไหนของแถวก็หยุด
+  wrap.addEventListener("pointerenter",e=>{if(e.pointerType==="mouse")hover=true});
+  wrap.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse"){hover=false;resumeAt=performance.now()+400}});
+  row._hold=()=>{resumeAt=performance.now()+1500};
+  row.addEventListener("touchstart",()=>{touching=true},{passive:true});
+  const tend=()=>{touching=false;resumeAt=performance.now()+2500};
+  row.addEventListener("touchend",tend,{passive:true});row.addEventListener("touchcancel",tend,{passive:true});
+  row.addEventListener("focusin",()=>{focused=true});
+  row.addEventListener("focusout",()=>{focused=false;resumeAt=performance.now()+600});
+  row.addEventListener("scroll",()=>{if(row.scrollLeft>=L)row.scrollLeft-=L},{passive:true});
+  const tick=now=>{
+    const dt=Math.min(80,now-last);last=now;
+    if(!row.isConnected)return;
+    if(row.offsetParent!==null){
+      if(hover||touching||focused||now<resumeAt)pos=row.scrollLeft;
+      else{pos+=MQ_SPEED*dt/1000;if(pos>=L)pos-=L;row.scrollLeft=pos}
+    }
+    mqRaf=requestAnimationFrame(tick);
+  };
+  mqRaf=requestAnimationFrame(tick);
+}
+window.addEventListener("resize",()=>{clearTimeout(mqRz);mqRz=setTimeout(()=>{if(!$("#pk").hidden)renderPicker()},250)});
 async function openSong(id,play){
   const s=songs.find(x=>x.id===id);if(!s)return;
   goSong();songTyping=false;spv="form";
@@ -808,6 +890,8 @@ async function openSong(id,play){
   if(play)$("#sgo").click();
 }
 $("#pbody").onclick=e=>{
+  const rb=e.target.closest("[data-rail]");
+  if(rb){const row=rb.parentElement.querySelector(".row");if(row._hold)row._hold();row.scrollBy({left:+rb.dataset.rail*420,behavior:"smooth"});return}
   const p=e.target.closest("[data-play]"),d=e.target.closest("[data-edit]"),n=e.target.closest("[data-new]");
   const pp=e.target.closest("[data-pplay]"),ps=e.target.closest("[data-psave]"),pr=e.target.closest("[data-prep]");
   if(p)openSong(p.dataset.play,true);
@@ -823,11 +907,19 @@ $("#pq").addEventListener("input",renderPicker);
 const API_URL="https://script.google.com/macros/s/AKfycbz5c_bd9j6byLvmUJyNU1ifPblXODC-Yf1rkhc5i1yX-Wq_0MP9ao4frW8v2wq1_JhZ/exec";
 const ERR={invalid_login:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",locked:"ใส่รหัสผิดหลายครั้ง ลองใหม่ในอีก 15 นาที",username_taken:"ชื่อผู้ใช้นี้มีคนใช้แล้ว",bad_username:"ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข และ _ ยาว 4-20 ตัว",bad_password:"รหัสผ่านต้องยาว 8-72 ตัวอักษร",bad_displayname:"ใส่ชื่อที่แสดง (ไม่เกิน 30 ตัว)",too_many:"มีคนใช้งานมากเกินไป ลองใหม่อีกสักครู่",unauthorized:"หมดเวลาล็อกอิน กรุณาเข้าสู่ระบบใหม่",network:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง",rights_required:"ต้องติ๊กยืนยันสิทธิ์ก่อนแชร์",bad_link:"ลิงก์ต้องเป็นลิงก์ YouTube",lyrics_required:"ใส่เนื้อเพลงก่อน",limit_reached:"เก็บเพลงได้สูงสุด 100 เพลงต่อบัญชี",server_error:"เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง",not_found:"ไม่พบเพลงนี้",forbidden:"ไม่มีสิทธิ์แอดมิน",disabled:"บัญชีนี้ถูกระงับ ติดต่อผู้ดูแล",self_action:"ทำกับบัญชีของตัวเองไม่ได้",bad_status:"สถานะไม่ถูกต้อง",bad_avatar:"รูปไม่ถูกต้องหรือใหญ่เกินไป ลองเลือกรูปอื่น",no_admin_code:"ยังไม่ได้ตั้งรหัสแอดมินใน Apps Script (ADMIN_CODE ต้องยาวอย่างน้อย 10 ตัว)",bad_code:"รหัสแอดมินไม่ถูกต้อง"};
 const errMsg=c=>ERR[c]||("เกิดข้อผิดพลาด ("+c+")");
+const RETRY={bootstrap:1,me:1,leaderboard:1,"songs.list":1,"stats.list":1,"songs.public":1,"songs.getPublic":1,login:1};
 async function api(action,payload){
-  try{
-    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action,token},payload||{}))});
-    return await r.json();
-  }catch(e){return {ok:false,error:"network"}}
+  const max=RETRY[action]?3:1;
+  let r;
+  for(let i=0;i<max;i++){
+    try{
+      const resp=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action,token},payload||{}))});
+      r=await resp.json();
+    }catch(e){r={ok:false,error:"network"}}
+    if(r.ok||(r.error!=="network"&&r.error!=="server_error")||i===max-1)return r;
+    await new Promise(res=>setTimeout(res,700*(i+1)+Math.random()*900));   // ระบบแน่น: รอสักครู่แล้วลองใหม่เอง
+  }
+  return r;
 }
 const UK="pk_user_v1",TK="pk_token_v1",MK="pk_meta_v1",GK="pk_guest_v1";
 const readMeta=()=>{try{return JSON.parse(localStorage.getItem(MK)||"{}")}catch(e){return {}}};
@@ -862,13 +954,20 @@ function reloadGuest(){
   try{hist=JSON.parse(localStorage.getItem(SK)||"[]")}catch(e){hist=[]}
   pubCache=null;renderSongs();
 }
+function applyBoot(b){
+  const meta=readMeta();
+  if(b.user){user=Object.assign({},user,b.user);try{localStorage.setItem(UK,JSON.stringify(user))}catch(e){}}
+  if(b.songs)songs=b.songs.map(x=>Object.assign({},x,meta[x.id]||{}));
+  if(b.stats)hist=b.stats.map(x=>({t:Date.parse(x.at),m:x.mode,l:"th",w:x.wpm,a:x.acc,s:x.sec,c:x.chars,ti:x.title,sid:x.songId||null,id:x.id}));
+  if(b.pub){pubCache=b.pub;pubAt=Date.now();pubErr=""}
+  if(b.leaderboard)renderLb(b.leaderboard);
+}
 async function afterLogin(){
   renderProf();
-  const [a,b]=await Promise.all([api("songs.list"),api("stats.list")]);
-  const meta=readMeta();
-  if(a.ok)songs=a.songs.map(x=>Object.assign({},x,meta[x.id]||{}));
-  if(b.ok)hist=b.stats.map(x=>({t:Date.parse(x.at),m:x.mode,l:"th",w:x.wpm,a:x.acc,s:x.sec,c:x.chars,ti:x.title,sid:x.songId||null}));
-  pubCache=null;renderSongs();reset();checkMigrate();adFresh=true;refreshAdminBadge();loadLb();
+  const b=await api("bootstrap");
+  if(b.ok&&b.user)applyBoot(b);
+  else if(!b.ok)$("#smsg").textContent=errMsg(b.error);
+  renderSongs();reset();checkMigrate();adFresh=true;refreshAdminBadge();
 }
 async function logout(){
   if(token)await api("logout");
@@ -878,13 +977,16 @@ async function initAuth(){
   renderProf();
   let u=null,t="";
   try{u=JSON.parse(localStorage.getItem(UK)||"null");t=localStorage.getItem(TK)||""}catch(e){}
-  if(u&&t){
-    user=u;token=t;songs=[];hist=[];renderProf();renderSongs();
-    const me=await api("me");
-    if(me.ok){user=me.user;await afterLogin()}
-    else if(me.error==="unauthorized"){setAuth(null);reloadGuest();renderProf();reset();openAuth("login",ERR.unauthorized)}
-    else{$("#smsg").textContent=errMsg(me.error)}
-  }else if(!localStorage.getItem(GK))openAuth("login");
+  const had=!!(u&&t);
+  if(had){user=u;token=t;songs=[];hist=[];renderProf();renderSongs()}
+  else if(!localStorage.getItem(GK))openAuth("login");
+  const b=await api("bootstrap");                       // ขอข้อมูลทั้งหมดในคำขอเดียว
+  if(!b.ok){$("#lbl").innerHTML='<li class="hint">โหลดอันดับไม่ได้ ลองกดรีเฟรช</li>';if(had)$("#smsg").textContent=errMsg(b.error);return}
+  if(had&&(b.expired||!b.user)){
+    setAuth(null);reloadGuest();renderProf();reset();applyBoot({leaderboard:b.leaderboard,pub:b.pub});openAuth("login",ERR.unauthorized);return;
+  }
+  applyBoot(b);
+  if(had){renderProf();renderSongs();reset();checkMigrate();adFresh=true;refreshAdminBadge()}
 }
 let amode="login";
 function setAuthMode(){
@@ -980,13 +1082,17 @@ function tierOf(w){
   if(w>=30)return ["เก่งมาก พยายามอีกนะ","😉","t2"];
   return ["พยายามเข้า","🥺","t1"];
 }
-async function loadLb(){
-  const el=$("#lbl"),r=await api("leaderboard");
-  if(!r.ok){el.innerHTML='<li class="hint">โหลดอันดับไม่ได้ ลองกดรีเฟรช</li>';return}
-  const L=r.list||[];
+function renderLb(L){
+  const el=$("#lbl");
+  L=L||[];
   el.innerHTML=L.length
     ?L.map((x,i)=>`<li class="${x.isMe?"me":""}"><span class="rk">${i<3?MEDAL[i]:x.rank}</span>${avHTML({avatar:x.avatar,displayName:x.name},"sm")}<span class="nm">${esc(x.name)}<small>${esc(MODE_TH[x.mode]||x.mode)}</small></span><span class="sc">${x.wpm}<small>WPM</small></span></li>`).join("")
     :'<li class="hint">ยังไม่มีอันดับ พิมพ์ให้ครบอย่างน้อย 40 ตัวอักษร ใช้เวลา 5 วินาทีขึ้นไป เพื่อติดอันดับ</li>';
+}
+async function loadLb(){
+  const r=await api("leaderboard");
+  if(!r.ok){$("#lbl").innerHTML='<li class="hint">โหลดอันดับไม่ได้ ลองกดรีเฟรช</li>';return}
+  renderLb(r.list);
 }
 $("#lbr").onclick=loadLb;
 function showAcAv(){$("#acav").innerHTML=avHTML(user,"big");$("#acrm").hidden=!(user&&user.avatar)}
@@ -1080,6 +1186,9 @@ function mini(s){
   return id?`<img class="mini" src="https://i.ytimg.com/vi/${id}/default.jpg" alt="" loading="lazy" onerror="this.style.display='none'">`:'<svg class="ic"><use href="#i-note"/></svg>';
 }
 let pubCache=null,pubLoading=false,pubErr="",pubAt=0;
+function rail(inner,cls){
+  return `<div class="rwrap"><button class="rbtn l" type="button" data-rail="-1" aria-label="เลื่อนไปทางซ้าย">‹</button><div class="row ${cls||""}">${inner}</div><button class="rbtn r" type="button" data-rail="1" aria-label="เลื่อนไปทางขวา">›</button></div>`;
+}
 function pubSection(q){
   const head='<div class="psec"><svg class="ic"><use href="#i-note"/></svg>เพลงจากทุกคน</div>';
   if((pubCache===null||Date.now()-pubAt>60000)&&!pubLoading){
@@ -1090,27 +1199,33 @@ function pubSection(q){
   if(pubErr)return head+'<p class="hint">'+esc(pubErr)+'</p>';
   const L=pubCache.filter(s=>!q||s.title.toLowerCase().includes(q));
   if(!L.length)return head+'<p class="hint">ยังไม่มีเพลงที่แชร์ในตอนนี้</p>';
-  return head+`<div class="row">${L.map(s=>pcard(s,"โดย "+esc(s.ownerName),"pub")).join("")}</div>`;
+  return head+rail(L.map(s=>pcard(s,"โดย "+esc(s.ownerName),"pub")).join(""),"auto");
 }
-function openPublic(id){
-  const s=(pubCache||[]).find(x=>x.id===id);if(!s)return;
+async function fetchPub(id){
+  const r=await api("songs.getPublic",{id});
+  return r.ok?r.song:(($("#phs").textContent=errMsg(r.error)),null);
+}
+async function openPublic(id){
+  $("#phs").textContent="กำลังโหลดเนื้อเพลง...";
+  const s=await fetchPub(id);if(!s)return;
   goSong();songTyping=false;spv="form";
-  
   curId=null;
   $("#stitle").value=s.title;$("#slyr").value=s.lyrics;$("#slink").value=s.link||"";
   vid="";$("#vwrap").innerHTML="";$("#smsg").textContent="";
   buildOpts();reset();$("#sgo").click();
 }
 async function savePublic(id,btn){
-  const s=(pubCache||[]).find(x=>x.id===id);if(!s)return;
+  const t0=btn.textContent;btn.textContent="กำลังบันทึก...";btn.disabled=true;
+  const s=await fetchPub(id);
+  if(!s){btn.textContent=t0;btn.disabled=false;return}
   if(user){
     const res=await api("songs.save",{title:s.title,link:s.link||"",lyrics:s.lyrics});
-    if(!res.ok){btn.textContent=errMsg(res.error);return}
+    if(!res.ok){btn.textContent=errMsg(res.error);btn.disabled=false;return}
     songs.push(Object.assign({},res.song));
   }else{
     songs.push({id:"s"+Date.now(),title:s.title,lyrics:s.lyrics,link:s.link||""});
   }
-  saveSongs();renderSongs();btn.textContent="บันทึกแล้ว";btn.disabled=true;
+  saveSongs();renderSongs();btn.textContent="บันทึกแล้ว";
 }
 async function reportPublic(id){
   const reason=prompt("เหตุผลที่แจ้งลบ (เช่น ละเมิดลิขสิทธิ์)");
@@ -1156,6 +1271,13 @@ function rline(str,t){
   }
   return h+`<span class="w">${w}</span>`;
 }
+$("#gline").addEventListener("click",()=>gin.focus());
+document.addEventListener("keydown",e=>{                 // พิมพ์ได้ทันที: กดปุ่มตัวอักษรตอนโฟกัสหลุดก็เข้าช่องพิมพ์เอง
+  if(!songTyping||mode!=="song"||$("#sg").hidden||document.activeElement===gin)return;
+  const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
+  if(e.ctrlKey||e.metaKey||e.altKey||e.key.length>1)return;
+  gin.focus();
+});
 function greset(){
   clearInterval(gtmr);gtmr=null;
   gi=0;gdone=false;gstart=0;gerr=gkeys=gprev=gok=0;
@@ -1250,7 +1372,7 @@ $("#langs").onclick=e=>{
   $("#hint1").textContent=lang==="en"?"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาอังกฤษ)":"แตะที่กรอบแล้วพิมพ์ (ต้องเปิดคีย์บอร์ดภาษาไทย)";
   buildKb();buildOpts();reset();
 };
-buildKb();buildOpts();reset();initAuth();loadLb();
+buildKb();buildOpts();reset();initAuth();
 </script>
 </body>
 </html>
