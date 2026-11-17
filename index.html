@@ -245,6 +245,18 @@ img.av{object-fit:cover}
 .sx.arm{color:#fff;background:var(--bad)}
 .more{display:block;width:100%;border:0;border-top:1px solid var(--ln);background:none;color:var(--ac);font-weight:600;font-size:14px;padding:12px;cursor:pointer}
 @media(max-width:560px){.lr{grid-template-columns:1fr auto auto auto}.lr span:nth-child(2){grid-column:1/-1;order:5}}
+/* หน้าพิมพ์ตามเพลง: MV ด้านบน เนื้อเพลงทีละบรรทัด สถิติด้านขวา */
+#vwrap .vid{width:min(100%,64vh);margin:16px auto 0}
+.sgw{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-top:16px;cursor:text}
+#sg .sgw .stats{flex-direction:column;flex-wrap:nowrap;justify-content:center;margin:0;width:104px}
+#sg .sgw .stats div{display:block;padding:10px 4px;border-radius:14px;text-align:center}
+#sg .sgw .stats b{display:block;font-size:22px}
+#gline,#gnext{background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;min-height:0;text-align:center;overflow-wrap:anywhere;word-break:break-word}
+#gline{font-size:clamp(24px,4vw,38px);line-height:1.7}
+#gline .cur{background:none;box-shadow:-3px 0 0 var(--ac)}
+#gnext{margin-top:12px;font-size:clamp(18px,2.6vw,24px);color:var(--mut);opacity:.6;line-height:1.5}
+#gin{position:absolute;opacity:0;width:1px;height:1px;margin:0;padding:0;border:0;pointer-events:none}
+@media(max-width:600px){.sgw{grid-template-columns:1fr}#sg .sgw .stats{flex-direction:row;width:auto;order:-1}#sg .sgw .stats div{flex:1}}
 </style>
 </head>
 <body>
@@ -363,12 +375,14 @@ img.av{object-fit:cover}
   </div>
 
   <div id="sg" hidden>
-    <div class="stats">
-      <div><b id="g1">0/0</b><span>บรรทัด</span></div>
-      <div><b id="g2">0</b><span>WPM</span></div>
-      <div><b id="g3">100%</b><span>ความแม่นยำ</span></div>
+    <div class="sgw" id="sgw">
+      <div><div class="line" id="gline"></div><div id="gnext"></div></div>
+      <div class="stats">
+        <div><b id="g1">0/0</b><span>บรรทัด</span></div>
+        <div><b id="g2">0</b><span>WPM</span></div>
+        <div><b id="g3">100%</b><span>ความแม่นยำ</span></div>
+      </div>
     </div>
-    <div class="line" id="gline"></div>
     <textarea id="gin" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
   </div>
 
@@ -443,7 +457,7 @@ let LESSONS=LES_TH,lang="th";
 /* ---------- โหมดจับเวลา / พิมพ์ ---------- */
 /* ---------- ระดับความยาก 1-8 (แท็บจับเวลา / พิมพ์) ---------- */
 const LV_TH={
-3:"กิน นอน ไป มา ดี ใจ น้ำ ตา มือ ปาก ขา แขน ผม ลม ฝน ดาว นก ปลา แมว หมา วัว บ้าน ยา งาน เกม รถ เรือ ทาง ปี วัน คืน เช้า หนาว สุข รัก ชอบ นั่ง เดิน วิ่ง อ่าน เขียน ร้อง เล่น".split(" "),
+3:"กิน นอน ไป มา ดี ใจ น้ำ ตา มือ ปาก ขา แขน ผม ลม ฝน ดาว นก ปลา แมว หมา วัว ควาย บ้าน ยา งาน เกม รถ เรือ ทาง ปี วัน คืน เช้า ร้อน หนาว สุข รัก ชอบ ขอบ นั่ง เดิน วิ่ง อ่าน เขียน ร้อง เล่น".split(" "),
 5:"ความรับผิดชอบ เพื่อนบ้าน ห้องสมุด ห้องเรียน อาหารกลางวัน เมื่อไหร่ เสียงเพลง ท้องถนน ที่พักผ่อน รถไฟฟ้า เครื่องบิน ตั้งแต่เช้า ผ่านไปแล้ว สวยงามมาก เขียวขจี นักเรียนใหม่ ท้องฟ้าสดใส พักผ่อนเพียงพอ".split(" "),
 6:["วันนี้ท้องฟ้าสดใส ลมพัดเบาๆ","ผมชอบกินข้าวกับเพื่อนที่ตลาด","นักเรียนอ่านหนังสือกับเพื่อนทุกวัน","แมวนอนใต้ต้นไม้ข้างบ้าน","พรุ่งนี้เราจะไปเที่ยวทะเลด้วยกัน","ฝึกฝนทุกวัน แล้วจะทำได้คล่องขึ้น","ขอบใจที่ช่วยกันตั้งใจทำงาน","ฝนตกหนักตอนกลางคืน อย่าลืมพกร่ม","อาหารร้านนี้อร่อยมาก ราคาไม่แพง","เมื่อวานเราเดินทางไปหายายที่บ้านนอก","ทุกคนสนุกกับการร้องเพลงและเล่นดนตรี","ตื่นเช้าทุกวัน ร่างกายจะสดชื่น"],
 7:["โรงเรียน","ภูเขา","ผู้คน","ประเทศ","ธรรมชาติ","รวดเร็ว","เย็นสบาย","ก็ได้","ใหญ่โต","ซื้อของ","ญาติพี่น้อง","ปัญหา","ฤดูฝน","ฤดูหนาว","ฉลาด","ธุรกิจ","โอกาส","ภาษาไทย","โทรศัพท์","ฮัลโหล","๑๒๓","๔๕๖","๗๘๙","๑๐๐ บาท","วันที่ ๑๕ ตุลาคม"],
@@ -1271,7 +1285,7 @@ function rline(str,t){
   }
   return h+`<span class="w">${w}</span>`;
 }
-$("#gline").addEventListener("click",()=>gin.focus());
+$("#sgw").addEventListener("click",()=>gin.focus());
 document.addEventListener("keydown",e=>{                 // พิมพ์ได้ทันที: กดปุ่มตัวอักษรตอนโฟกัสหลุดก็เข้าช่องพิมพ์เอง
   if(!songTyping||mode!=="song"||$("#sg").hidden||document.activeElement===gin)return;
   const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
@@ -1283,7 +1297,7 @@ function greset(){
   gi=0;gdone=false;gstart=0;gerr=gkeys=gprev=gok=0;
   gin.value="";gin.disabled=false;gdraw();gstats();
 }
-function gdraw(){$("#gline").innerHTML=rline(glines[gi]||"",gin.value)}
+function gdraw(){$("#gline").innerHTML=rline(glines[gi]||"",gin.value);$("#gnext").textContent=glines[gi+1]||""}
 function gcorrect(){const t=gin.value,l=glines[gi]||"";let c=0;for(let i=0;i<t.length;i++)if(t[i]===l[i])c++;return c}
 function gstats(){
   const el=gstart?(Date.now()-gstart)/1000:0;
