@@ -290,6 +290,16 @@ img.av{object-fit:cover}
 .res .rimg{display:block;margin:0 auto 6px;width:min(340px,78%);height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.25));animation:rpop .55s cubic-bezier(.2,1.4,.4,1) both}
 .res .rimg.t4{width:min(390px,86%)}
 .res .tier.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rflex{display:flex;align-items:center;justify-content:center;gap:clamp(20px,5vw,72px);flex-wrap:wrap}
+.rl{text-align:center;min-width:220px}
+.rbig{font-size:clamp(88px,12vw,150px);line-height:1;font-weight:800;color:var(--tx);letter-spacing:-2px}
+.rwpm{font-size:22px;font-weight:700;color:var(--mut);letter-spacing:4px;margin:2px 0 16px}
+.rst{list-style:none;margin:0;padding:0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.rst li{display:flex;flex-direction:column;align-items:center;min-width:84px;padding:4px 12px}
+.rst b{font-size:22px;color:var(--tx)}.rst span{font-size:12px;color:var(--mut)}
+.res .rimg{margin:0;width:min(380px,42vw)}
+.res .rimg.t4{width:min(420px,46vw)}
+@media(max-width:700px){.res .rimg,.res .rimg.t4{width:min(320px,80%)}}
 @keyframes rpop{from{transform:scale(.6) translateY(20px);opacity:0}to{transform:none;opacity:1}}
 #confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999}
 @media(prefers-reduced-motion:reduce){.res .rimg{animation:none}}
@@ -625,7 +635,7 @@ function showRes(el,c,acc){
   recordStat(el,c,acc,wpm);
   res.hidden=false;
   const T=tierOf(wpm);
-  res.innerHTML=`<img class="rimg ${T[2]}" src="${MASCOT[T[2]]}" alt="${T[0]}"><h2 class="tier sr ${T[2]}"><span class="tt2">${T[0]}</span></h2><p><b style="color:var(--tx);font-size:32px">${wpm}</b> WPM</p><p>แม่นยำ ${acc}% · พิมพ์ถูก ${c} ตัวอักษร · ใช้เวลา ${Math.round(el)} วินาที</p>`;
+  res.innerHTML=`<h2 class="tier sr ${T[2]}"><span class="tt2">${T[0]}</span></h2><div class="rflex"><div class="rl"><div class="rbig ${T[2]}">${wpm}</div><div class="rwpm">WPM</div><ul class="rst"><li><b>${acc}%</b><span>แม่นยำ</span></li><li><b>${c}</b><span>พิมพ์ถูก (ตัวอักษร)</span></li><li><b>${Math.round(el)}</b><span>วินาที</span></li></ul></div><img class="rimg ${T[2]}" src="${MASCOT[T[2]]}" alt="${T[0]}"></div>`;
   confetti(T[2]);
 }
 /* ---- พลุกระดาษ: t2 ธรรมดา / t3 ระเบิดดีขึ้น / t4 อลังการ ---- */
