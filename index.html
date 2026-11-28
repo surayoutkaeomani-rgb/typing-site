@@ -352,7 +352,7 @@ img.av{object-fit:cover}
 </div>
 <div class="app">
 <aside id="side" class="side">
-  <div class="brand"><svg class="ic big"><use href="#i-note"/></svg><div><b>Paipimkaraoke</b><small>สร้างเพลงของคุณได้ง่ายๆ</small></div></div>
+  <div class="brand"><svg class="ic big"><use href="#i-note"/></svg><div><b>Paipimkaraoke</b><small>ขอให้สนุกกับการพิมพ์นะค้าบ</small></div></div>
   <div class="songs">
     <div id="slist"></div>
     <button class="newbtn" id="snew"><svg class="ic"><use href="#i-plus"/></svg>เพลงใหม่</button>
@@ -360,7 +360,7 @@ img.av{object-fit:cover}
     <div id="mig" class="gcard sm" hidden><div id="migt"></div><div class="bt2"><button class="pb" id="migyes">อัปโหลด</button><button class="sb" id="migno">ไม่ต้อง</button></div></div>
   </div>
   <div id="prof"></div>
-  <div class="quote"><svg class="ic"><use href="#i-note"/></svg><span>“ให้เสียงเพลง<br>เป็นพื้นที่ของคุณ”</span></div>
+  <div class="quote"><svg class="ic"><use href="#i-note"/></svg><span>“ขอให้สนุก<br>กับการพิมพ์ตามเพลงนะจ๊ะ”</span></div>
 </aside>
 <main class="main">
   <header class="ph">
@@ -879,7 +879,7 @@ function saveSongs(){
 function renderSongs(){
   $("#slist").innerHTML=songs.length
     ?songs.map(s=>`<div class="si"><button class="n ${s.id===curId?"on":""}" data-id="${esc(s.id)}">${mini(s)}<span>${esc(s.title)}</span></button><button class="x" data-del="${esc(s.id)}" title="ลบ">✕</button></div>`).join("")
-    :'<div class="hint" style="margin-bottom:8px">ยังไม่มีเพลงที่บันทึกไว้</div>';
+    :'<div class="hint" style="margin-bottom:8px">บ่มีเพลงที่บันทึกไว้</div>';
 }
 function newSong(){
   curId=null;
@@ -1062,7 +1062,7 @@ function updateAdminTab(){
 function renderProf(){
   updateAdminTab();
   const el=$("#prof");
-  $("#shint").textContent=user?"เพลงของคุณเก็บไว้ในบัญชี เปิดจากเครื่องไหนก็ได้":"ยังไม่ได้ล็อกอิน เพลงเก็บไว้ในเครื่องนี้เท่านั้น";
+  $("#shint").textContent=user?"เพลงจะเก็บไว้ในบัญชี":"ยังไม่ได้ล็อกอิน เพลงเก็บไว้ในเครื่องนี้เท่านั้น";
   el.innerHTML=user
     ?`<div class="pf"><button class="pfb" id="pacct" aria-label="บัญชีของฉัน">${avHTML(user)}<div class="pn"><b>${esc(user.displayName)}</b><small>@${esc(user.username)}${user.role==="admin"?' · <span class="adm">แอดมิน</span>':""}</small></div></button><button class="x2" id="plogout" title="ออกจากระบบ" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-out"/></svg></button></div>`
     :`<button class="newbtn" id="plogin"><svg class="ic"><use href="#i-user"/></svg>เข้าสู่ระบบ / สมัครสมาชิก</button>`;
@@ -1434,7 +1434,7 @@ function loadVid(){
   const id=ytId($("#slink").value.trim());
   if(!id||id===vid)return !!id;
   vid=id;
-  $("#vwrap").innerHTML=`<div class="vid"><iframe src="${ytSrc(id,false)}" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">ถ้าวิดีโอไม่แสดง ให้เปิดใน YouTube หรือเลือกไฟล์เสียงแทน</a>`;
+  $("#vwrap").innerHTML=`<div class="vid"><iframe src="${ytSrc(id,false)}" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">ถ้าวิดีโอไม่แสดง ติดลิขสิทธิ์จ้า</a>`;
   return true;
 }
 function restartMedia(){
